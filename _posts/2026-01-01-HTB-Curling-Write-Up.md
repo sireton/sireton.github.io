@@ -45,7 +45,7 @@ nmap -sC -sV <target-ip>
      width="500"
      style="display:block; margin: 0 auto;">
 
-<p style="text-align:center;"><em>Figure 2: Service enumeration</em></p>
+<p style="text-align:center;"><em>Figure 1: Service enumeration</em></p>
 
 
 The scan identified an HTTP service hosting a Joomla-based web application. Given the presence of a content management system, further enumeration focused on application-specific discovery and potential credential exposure.
