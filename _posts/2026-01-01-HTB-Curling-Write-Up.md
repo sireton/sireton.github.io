@@ -40,7 +40,7 @@ Initial reconnaissance began with a standard TCP scan to identify exposed servic
 nmap -sC -sV <target-ip>
 ```
 <p align="center">
-  <img src="/assets/images/curling/nmap scan results.png" width="650">
+  <img src="/assets/images/curling/nmap-scan-results.png" width="650">
 </p>
 <p align="center"><em>Figure 2: Service enumeration</em></p>
 
