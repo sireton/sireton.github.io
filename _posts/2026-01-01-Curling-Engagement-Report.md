@@ -8,11 +8,14 @@ tags: [Privilege Escalation]
 ---
 
 # Curling Penetration Test Report
-## Target: Curling (10.129.71.236)
 
 **Assessment Type:** External Penetration Test
+
 **Author:** Sam Ireton
+
 **Date:** 2026-01-01
+
+## Target: Curling (10.129.71.236)
 
 ---
 
@@ -68,10 +71,10 @@ The assessment followed a structured penetration testing lifecycle aligned with 
 
 ### F-01: Sensitive Information Disclosure
 
-**Description**
+**Description:**
 Encoded credentials were exposed through publicly accessible application content.
 
-**Impact**
+**Impact:**
 Allowed attackers to obtain valid administrative credentials.
 
 **Risk Rating:** High
@@ -80,10 +83,10 @@ Allowed attackers to obtain valid administrative credentials.
 
 ### F-02: Insecure CMS Administration
 
-**Description**
+**Description:**
 Administrative access permitted unrestricted modification of server-side templates, enabling arbitrary code execution.
 
-**Impact**
+**Impact:**
 Remote command execution on the underlying server.
 
 **Risk Rating:** Critical
@@ -92,10 +95,10 @@ Remote command execution on the underlying server.
 
 ### F-03: Weak Credential Storage
 
-**Description**
+**Description:**
 Backup files containing credentials were weakly obfuscated and accessible after initial compromise.
 
-**Impact**
+**Impact:**
 Enabled unauthorized SSH access and lateral movement.
 
 **Risk Rating:** High
@@ -104,10 +107,10 @@ Enabled unauthorized SSH access and lateral movement.
 
 ### F-04: Insecure Privileged Automation
 
-**Description**
+**Description:**
 A root-level automated process relied on user-controlled configuration files when retrieving data via `curl`.
 
-**Impact**
+**Impact:**
 Allowed unauthorized access to sensitive system files and full privilege escalation.
 
 **Risk Rating:** Critical
@@ -127,7 +130,7 @@ This illustrates how multiple moderate issues can compound into a critical secur
 
 ## 7. Business Impact
 
-A successful attack could result in:
+A successful attack could using these methodologies could result in:
 - Loss of system confidentiality and integrity
 - Unauthorized access to sensitive data
 - Potential lateral movement into internal environments
