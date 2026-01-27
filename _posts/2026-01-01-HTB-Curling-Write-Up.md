@@ -2,7 +2,7 @@
 title: "HTB Curling – Web Exploitation & Privilege Escalation Case Study"
 categories:
   - Reporting
-  - HTB Walkthroughs
+  - HTB Write Ups
 tags: [HTB, Linux, Web, Enumeration, Privilege Escalation, Nmap, CeWL, Joomla, Netcat, Python]
 ---
 
