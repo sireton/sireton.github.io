@@ -7,7 +7,6 @@ categories:
 tags: [Privilege Escalation]
 ---
 
-# Curling Penetration Test Report
 
 **Assessment Type:** External Penetration Test
 
