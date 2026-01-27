@@ -40,9 +40,8 @@ Initial reconnaissance began with a standard TCP scan to identify exposed servic
 nmap -sC -sV <target-ip>
 ```
 <p align="center">
-  <img src="/assets/images/curling/1-nmap-scan.png" width="650">
+  <img src="/assets/img/curling/1-nmap-scan.png" width="500">
 </p>
-<p align="center"><em>Figure 2: Service enumeration</em></p>
 
 
 The scan identified an HTTP service hosting a Joomla-based web application. Given the presence of a content management system, further enumeration focused on application-specific discovery and potential credential exposure.
