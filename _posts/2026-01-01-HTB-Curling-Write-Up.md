@@ -12,8 +12,15 @@ This case study documents the assessment of the retired Hack The Box machine **C
 
 The assessment was completed using standard open-source tooling commonly employed in web and infrastructure testing, including `nmap` for service discovery, `cewl` and `joomscan` for web application enumeration, `netcat` for shell handling, and small Python utilities for shell stabilization and file transfer.
 
+In addition to this technical case study, a formal **penetration testing engagement report** was produced as an official deliverable for this assessment. The report documents scope, methodology, findings, and remediation guidance in a format consistent with industry-standard client reporting.
 
 All activities were conducted educational and professional demonstration purposes.
+
+📄 **Curling Engagement Report:**  
+- [View the full penetration test report](/posts/Curling-Engagement-Report/)
+
+
+---
 
 ## Tools & Techniques Used
 
