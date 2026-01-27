@@ -39,8 +39,11 @@ Initial reconnaissance began with a standard TCP scan to identify exposed servic
 ```bash
 nmap -sC -sV <target-ip>
 ```
+
 <p align="center">
-  <img src="/assets/img/curling/1-nmap-scan.png" width="500"> 
+  <img src="/assets/img/curling/1-nmap-scan.png"
+       alt="Nmap service and version enumeration results"
+       width="500">
 </p>
 
 
