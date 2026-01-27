@@ -15,7 +15,7 @@ tags: [Privilege Escalation]
 
 **Date:** 2026-01-01
 
-## Target: Curling (10.129.71.236)
+ Target: Curling (10.129.71.236)
 
 ---
 
