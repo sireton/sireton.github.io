@@ -17,7 +17,7 @@ In addition to this technical case study, a formal **penetration testing engagem
 All activities were conducted educational and professional demonstration purposes.
 
 📄 **Curling Engagement Report:**  
-- [View the full penetration test report](/posts/Curling-Engagement-Report/)
+- [View the full penetration test report](/posts/2026-01-01-Curling-Engagement-Report.md)
 
 
 ---
