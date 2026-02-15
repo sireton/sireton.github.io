@@ -84,8 +84,8 @@ The vulnerability stems from improper strong parameter filtering within the Rail
 
 ### Evidence
 
-![Mass Assignment Exploit](/assets/img/posts/facts/mass-assignment.png)
-![Mass Assignment Exploit](/assets/img/posts/facts/mass-assignment2.png)
+![Mass Assignment Exploit](/assets/img/facts/mass-assignment.png)
+![Mass Assignment Exploit](/assets/img/facts/mass-assignment2.png)
 
 ---
 
@@ -115,7 +115,7 @@ The `internal` bucket contained a `.ssh` directory with private keys.
 
 ### Evidence
 
-![MinIO Credentials](/assets/img/posts/facts/minio-credentials.png)
+![MinIO Credentials](/assets/img/facts/minio-credentials.png)
 
 ---
 
@@ -143,7 +143,7 @@ Successful SSH authentication was obtained as a valid system user.
 
 ### Evidence
 
-![SSH Access](/assets/img/posts/facts/ssh-access.png)
+![SSH Access](/assets/img/facts/ssh-access.png)
 
 ---
 
@@ -170,7 +170,7 @@ By creating a malicious Ruby fact file, arbitrary code execution as root was ach
 
 ### Evidence
 
-![Root Shell](/assets/img/posts/facts/root-shell.png)
+![Root Shell](/assets/img/facts/root-shell.png)
 
 ---
 
