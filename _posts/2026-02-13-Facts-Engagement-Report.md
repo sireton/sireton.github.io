@@ -4,7 +4,7 @@ date: 2026-02-13
 categories: [Engagement Reports]
 tags: [Web Exploitation, Privilege Escalation, Credential Exposure, Linux]
 description: "Full-chain compromise of a Linux host via Camaleon CMS mass assignment vulnerability, exposed MinIO credentials, SSH key abuse, and sudo misconfiguration."
-image: /assets/img/posts/facts/facts-cover.png
+
 ---
 
 # Facts – Security Assessment Report
