@@ -7,8 +7,6 @@ description: "Full-chain compromise of a Linux host via Camaleon CMS mass assign
 
 ---
 
-# Facts – Security Assessment Report
-
 **Assessment Date:** 2026-02-13  
 **Target Host:** 10.129.8.32  
 **Platform:** Linux (Ubuntu 25.04)  
