@@ -85,6 +85,7 @@ The vulnerability stems from improper strong parameter filtering within the Rail
 ### Evidence
 
 ![Mass Assignment Exploit](/assets/img/posts/facts/mass-assignment.png)
+![Mass Assignment Exploit](/assets/img/posts/facts/mass-assignment2.png)
 
 ---
 
