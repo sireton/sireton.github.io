@@ -36,9 +36,9 @@ social:
   email: hideyourbytes@gmail.com
   links:
     - https://github.com/sireton
-    - https://www.linkedin.com/in/sam-ireton
     - https://app.hackthebox.com/profile/YOUR_HTB_ID 
-rss: www.linkedin.com/in/sam-ireton
+linkedin: https://www.linkedin.com/in/sam-ireton
+rss: false
 # Site Verification Settings
 webmaster_verifications:
   google: # fill in your Google verification code
