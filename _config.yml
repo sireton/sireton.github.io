@@ -37,7 +37,7 @@ social:
   links:
     - https://github.com/sireton
     - https://app.hackthebox.com/profile/YOUR_HTB_ID 
-linkedin: https://www.linkedin.com/in/sam-ireton
+    - https://www.linkedin.com/in/sam-ireton
 rss: false
 # Site Verification Settings
 webmaster_verifications:
