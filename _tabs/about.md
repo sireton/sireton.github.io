@@ -19,5 +19,5 @@ Alongside my professional work, I actively pursue continuous learning through ha
 
 ---
 
-[LinkedIn](https://www.linkedin.com/in/yourname) · [GitHub](https://github.com/yourusername)
+[LinkedIn](https://www.linkedin.com/in/sam-ireton) · [GitHub](https://github.com/sireton)
 
