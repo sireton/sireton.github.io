@@ -2,12 +2,11 @@
 title: "Curling – Joomla RCE & Privileged Automation Abuse"
 date: 2026-01-01
 categories:
-  - HTB - Write Ups
+  - Case Studies 
 tags: [HTB, Linux, Easy, Web, Joomla, RCE, Privilege Escalation, CeWL, Netcat, Python]
 description: "Full-chain compromise of HTB Curling via exposed Base64 credentials, Joomla template RCE, credential backup decoding, and privileged curl automation abuse to achieve root."
 image:
-  path: /assets/img/curling/1-nmap-scan.png
-  alt: "Curling – HackTheBox"
+ 
 ---
 
 ## Overview
