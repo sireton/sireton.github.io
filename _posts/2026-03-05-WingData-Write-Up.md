@@ -1,5 +1,5 @@
 ---
-title: "WingData – HackTheBox Season 10 Case Study"
+title: "WingData – Case Study"
 date: 2026-03-05
 categories:
   - HTB - Write Ups
@@ -12,8 +12,6 @@ image:
 ## Overview
 
 > **Difficulty:** `Easy` &nbsp;|&nbsp; **OS:** `Linux` &nbsp;|&nbsp; **Season:** `Season 10`
-
-> ⚠️ **This machine is currently active on HackTheBox.** Flags and sensitive details have been redacted in accordance with HTB policy. This write-up is intentionally high-level in areas to avoid spoiling the experience for others.
 
 WingData is an Easy Linux machine from HackTheBox Season 10. It covers a realistic attack chain involving service enumeration, a recently disclosed unauthenticated RCE vulnerability, offline credential cracking, and a modern exploit technique to escalate privileges to root.
 
@@ -191,7 +189,7 @@ cat /root/root.txt
 
 1. **Version disclosure matters** — A single version string on a login page was enough to identify a critical, remotely exploitable CVE. Information leakage at the surface level can have serious consequences.
 
-2. **"Secure" doesn't mean unbreakable** — CVE-2025-4517 is a great reminder that newer protections like `filter="data"` represent a layer of defence, not a complete solution. Understanding *why* a protection works — and where its assumptions break down — is core to both offensive and defensive security work.
+2. **"Secure" doesn't mean unbreakable** — CVE-2025-4517 is a great reminder that newer protections like `filter="data"` represent a layer of defence, not a complete solution. Understanding *why* a protection works and where its assumptions break down are core to both offensive and defensive security work.
 
 3. **Credential files deserve the same scrutiny as databases** — Flat configuration files storing password hashes are easy to overlook. They deserve the same access controls as any credential store.
 
@@ -205,5 +203,6 @@ cat /root/root.txt
 - [HackTheBox — WingData](https://app.hackthebox.com/machines/wingdata)
 
 ---
+> ⚠️ **This machine is currently active on HackTheBox.** Flags and sensitive details have been redacted in accordance with HTB policy. This write-up is intentionally high-level in areas to avoid spoiling the experience for others.
 
 *Flags and credentials have been redacted. This write-up will be updated with full details once the machine is retired. For educational purposes only.*
