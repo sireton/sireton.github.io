@@ -1,5 +1,5 @@
 ---
-title: "WingData – Case Study"
+title: "WingData – FTP Server RCE & Privileged Archive Extraction Abuse"
 date: 2026-03-05
 categories:
   - HTB - Write Ups
