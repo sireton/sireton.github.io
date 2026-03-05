@@ -1,13 +1,13 @@
 ---
-title: "Facts – Penetration Test Report"
+title: "Facts – Engagement Report"
 date: 2026-02-13
 categories:
   - Pentest Reports
 tags: [HTB, Linux, Medium, Web Exploitation, Mass Assignment, CVE-2024-46987, Privilege Escalation, MinIO, SSH, Credential Exposure]
 description: "Penetration test report for HTB Facts. Full-chain root compromise via Camaleon CMS mass assignment (CVE-2024-46987), exposed MinIO credentials, SSH key cracking, and sudo facter misconfiguration."
 image:
-  path: /assets/img/facts/mass-assignment.png
-  alt: "Facts – Penetration Test Report"
+  path: /assets/img/facts/factslogo.png
+  alt: "Facts – Engagement Report"
 ---
 
 <div style="border-left: 4px solid #e74c3c; padding: 0.5rem 1rem; background: rgba(231,76,60,0.05); margin-bottom: 2rem;">
