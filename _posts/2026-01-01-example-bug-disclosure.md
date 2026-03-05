@@ -2,8 +2,7 @@
 title: Example Bug Disclosure
 date: 2026-01-01
 categories:
-  - Reporting
-  - Bug Disclosures
+  - Disclosures
 tags: [Disclosure]
 ---
 
