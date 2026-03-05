@@ -8,6 +8,8 @@ description: "Penetration test report for HTB Facts. Full-chain root compromise 
 image:
   path: /assets/img/facts/factslogo.png
   alt: "Facts – Engagement Report"
+  width: 300
+  height: 300
 ---
 
 <div style="border-left: 4px solid #e74c3c; padding: 0.5rem 1rem; background: rgba(231,76,60,0.05); margin-bottom: 2rem;">
