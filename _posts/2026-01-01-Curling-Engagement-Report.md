@@ -39,7 +39,7 @@ image:
 | **Engagement Scope** | HTTP (80), SSH (22) |
 | **Assessment Date** | 2026-01-01 |
 | **Report Author** | Sam Ireton |
-| **Related Walkthrough** | [Technical Write-Up](/posts/HTB-Curling-Write-Up/) |
+| **Related Walkthrough** | [Technical Write-Up](/posts/Curling-Joomla-RCE-Privileged-Automation-Abuse/) |
 
 ---
 
