@@ -10,16 +10,6 @@ image:
   alt: "Curling – Penetration Test Report"
 ---
 
-> **Portfolio Disclaimer**
->
-> This report was produced against **Curling**, a retired machine on the [HackTheBox](https://app.hackthebox.com) platform — a legal, controlled environment designed for security training and practice. No unauthorized testing was performed against real-world systems.
->
-> The purpose of this document is to demonstrate professional penetration test reporting practices: structured finding documentation, business impact analysis, and actionable remediation guidance. The findings and attack chain are real; the target is a practice environment.
->
-> Engagement reports of this kind are a standard deliverable in professional penetration testing engagements. This is what that looks like.
-
----
-
 <div style="border-left: 4px solid #e74c3c; padding: 0.5rem 1rem; background: rgba(231,76,60,0.05); margin-bottom: 2rem;">
 <strong>Classification:</strong> Portfolio Demonstration &nbsp;|&nbsp;
 <strong>Author:</strong> Sam Ireton &nbsp;|&nbsp;
@@ -45,13 +35,11 @@ image:
 
 ## 1. Executive Summary
 
-The Curling web server runs a Joomla CMS deployment that handed over the keys almost immediately — not through any sophisticated exploit, but through a series of entirely avoidable configuration oversights.
+A black box penetration test was conducted against a Linux web server hosting a Joomla CMS deployment. The assessment simulated an unauthenticated external attacker with no prior knowledge of the environment.
 
-Starting from a position of no credentials and no prior knowledge of the environment, the assessment reached full root compromise in four steps. The first was reading the page source of the homepage, where a developer had left a Base64-encoded password in an HTML comment. That one credential was enough to access the Joomla admin panel, which in turn provided a built-in PHP file editor that could run arbitrary code on the server. From there, a weakly obfuscated password backup file in a user's home directory provided SSH access — and a root-owned automation job that blindly accepted user-controlled URLs as input handed over the final escalation.
+The assessment identified **2 Critical** and **2 High** severity findings. The most significant issues were the exposure of administrative credentials in publicly accessible page content, and a root-level automation process that accepted user-controlled input without validation.
 
-None of these findings required advanced technique. What they required was a developer who never removed test credentials from production, an admin panel with no IP restrictions, and a scheduled task written without considering what would happen if a low-privileged user modified its config file. This is the pattern that shows up most often in real environments: not sophisticated attacks, but layered oversights that combine into full compromise.
-
-Two findings are rated Critical, two are rated High. All four are addressed in this report with specific, prioritized remediation guidance.
+When chained together, these findings allowed complete system compromise from an unauthenticated network position — progressing from anonymous web visitor to root shell without any prior knowledge of the environment.
 
 ### Risk Summary
 
@@ -181,6 +169,7 @@ This provided unauthenticated RCE via URL parameters once deployed.
 #### Evidence
 
 ```bash
+# Confirmed RCE via web shell
 curl "http://10.129.71.236/templates/beez3/error.php?cmd=id"
 # uid=33(www-data) gid=33(www-data) groups=33(www-data)
 ```
@@ -193,7 +182,7 @@ Full remote code execution on the underlying web server as the `www-data` servic
 
 #### Remediation
 
-1. Disable the Joomla template file editor in `configuration.php`
+1. Disable the Joomla template file editor via `configuration.php`: set `$config->sef_rewrite` appropriately and restrict file system access
 2. Restrict the Joomla admin panel (`/administrator`) to trusted IP addresses via web server or firewall rules
 3. Enforce multi-factor authentication on all CMS administrative accounts
 4. Monitor admin panel access and template file modifications via web application logging
@@ -213,25 +202,27 @@ Full remote code execution on the underlying web server as the `www-data` servic
 
 #### Description
 
-A file named `password_backup` was found in the home directory of user `floris`. The contents were encoded through multiple layers (hex → bzip2 → gzip → bzip2) rather than encrypted. This provides no meaningful security and is trivially reversible. Offline analysis recovered the plaintext SSH credential.
+A file named `password_backup` was found in the home directory of user `floris`, accessible after achieving initial foothold. The file contained a credential that had been encoded through multiple layers (hex encoding → bzip2 → gzip → bzip2) rather than encrypted. This encoding scheme provides no meaningful security and is trivially reversible. Offline analysis recovered the plaintext SSH credential.
 
 #### Evidence
 
 ```bash
+# File transferred and decoded offline
+# Recovered credential used for successful SSH authentication
 ssh floris@10.129.71.236
 # Password: 5d<wdCbdZu)|hChXll
 ```
 
 #### Impact
 
-Lateral movement from `www-data` to the `floris` user account with full SSH access and persistence.
+Lateral movement from `www-data` web server account to the `floris` user account with full SSH access, persistence, and access to user-level files.
 
 > **Worst case:** Persistent authenticated SSH access to the system as a named user account.
 
 #### Remediation
 
 1. Remove credential backup files from user home directories immediately
-2. Use a secrets management solution for credential storage
+2. Use a secrets management solution (HashiCorp Vault, OS keychain) for credential storage
 3. Rotate the compromised SSH credential
 4. Audit all user home directories for sensitive files
 
@@ -250,29 +241,43 @@ Lateral movement from `www-data` to the `floris` user account with full SSH acce
 
 #### Description
 
-A root-owned automated process periodically executed `curl` against a URL specified in a user-writable configuration file. By modifying the `input` file to reference local system files via `file://` URI scheme, the root process could be coerced into reading arbitrary restricted files.
+A root-owned automated process periodically executed `curl` against a URL specified in a configuration file (`input`) located in the `floris` user's home directory. The `input` file was writable by `floris`, meaning the URL passed to the privileged `curl` invocation was entirely user-controlled.
+
+By modifying the `input` file to reference local system files via the `file://` URI scheme, the root process could be coerced into reading arbitrary restricted files and writing their contents to the output `report` file.
 
 ```bash
 echo 'url = "file:///root/root.txt"' > /home/floris/admin-area/input
-# On next cron execution, contents appear in report file
+# On next cron execution:
+cat /home/floris/admin-area/report
+# [root flag]
 ```
 
 #### Impact
 
-Arbitrary file read as root. Extension to write primitives would constitute full privilege escalation.
+Arbitrary file read as root, enabling retrieval of sensitive system files, credentials, SSH keys, and shadow file contents. With write primitives this would constitute full privilege escalation.
 
-> **Worst case:** Full root compromise. Adding an SSH key to `/root/.ssh/authorized_keys` would provide persistent root access.
+> **Worst case:** Full root compromise. Extension to write arbitrary files (e.g. adding SSH key to `/root/.ssh/authorized_keys`) would provide persistent root access.
 
 #### Remediation
 
-1. Change ownership of `input` to `root:root`, remove write permissions for other users
-2. Validate URLs against a strict allowlist before passing to curl — reject `file://`, `gopher://`, and other non-HTTP schemes
-3. Run the automation as a dedicated low-privilege service account rather than root
-4. Audit all cron jobs and their configuration files for user-controlled input patterns
+1. Change ownership of the `input` configuration file to `root:root` and remove write permissions for all other users (`chmod 600`)
+2. Validate and sanitise all URLs against a strict allowlist before passing to curl — reject `file://`, `gopher://`, and other non-HTTP schemes
+3. Run the automation process as a dedicated low-privilege service account rather than root
+4. Audit all cron jobs and their associated configuration files for similar user-controlled input patterns
 
 ---
 
 ## 7. Attack Chain Narrative
+
+The engagement began with unauthenticated web enumeration. Manual review of the homepage source revealed a Base64-encoded string that decoded to a valid administrative password. Combined with a username identified from page content, this provided immediate Joomla admin panel access without any brute force.
+
+With administrative CMS access, the built-in template file editor was used to deploy a PHP web shell, achieving remote code execution as `www-data`. A reverse shell was established and stabilised.
+
+Filesystem enumeration identified an obfuscated credential backup file in the `floris` home directory. Offline decoding of the multi-layer encoded file recovered the SSH password for `floris`, enabling persistent authenticated shell access.
+
+Final enumeration revealed a root-owned cron job consuming a user-writable configuration file. Modifying the URL parameter to reference `/root/root.txt` via `file://` resulted in the root flag being written to the readable output file on the next cron execution.
+
+### Attack Chain
 
 ```
 [Unauthenticated]
@@ -290,7 +295,7 @@ Arbitrary file read as root. Extension to write primitives would constitute full
 [F-04: Privileged curl automation abuse] ── Root file read → Full compromise
 ```
 
-**Key Observation:** No individual finding required advanced exploitation. The chain succeeded through credential exposure, a by-design CMS feature, and a configuration oversight — reflecting real-world scenarios where defence-in-depth failures enable full compromise.
+**Key Observation:** No individual finding required advanced exploitation. The chain succeeded entirely through credential exposure, a by-design CMS feature, and a configuration oversight — reflecting real-world scenarios where defence-in-depth failures enable full compromise.
 
 ---
 
@@ -345,3 +350,9 @@ If these vulnerabilities existed in a production environment:
 - [MITRE ATT&CK — T1552.001](https://attack.mitre.org/techniques/T1552/001/)
 - [MITRE ATT&CK — T1505.003](https://attack.mitre.org/techniques/T1505/003/)
 - [MITRE ATT&CK — T1053.003](https://attack.mitre.org/techniques/T1053/003/)
+
+---
+
+<div style="border-top: 1px solid #444; padding-top: 1rem; margin-top: 2rem; font-size: 0.85rem; color: #888;">
+<strong>Disclaimer:</strong> This report was produced against a deliberately vulnerable HackTheBox environment for educational and portfolio demonstration purposes. No unauthorized testing was performed against real-world systems.
+</div>
