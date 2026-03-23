@@ -5,9 +5,6 @@ categories:
   - Pentest Reports
 tags: [HTB, Linux, Joomla, RCE, Privilege Escalation, Credential Exposure]
 description: "Penetration test report for HTB Curling. Critical findings include Joomla template RCE and privileged automation abuse enabling full root compromise from an unauthenticated position."
-image:
-  path: /assets/img/curling/1-nmap-scan.png
-  alt: "Curling – Penetration Test Report"
 pin: true
 
 ---
