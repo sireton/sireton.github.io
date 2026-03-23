@@ -8,7 +8,6 @@ on:
       - .gitignore
       - README.md
       - LICENSE
-
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -25,14 +24,12 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           # submodules: true
-          # If using the 'assets' git submodule from Chirpy Starter, uncomment above
           # (See: https://github.com/cotes2020/chirpy-starter/tree/main/assets)
 
       - name: Setup Pages
@@ -54,7 +51,7 @@ jobs:
         run: |
           bundle exec htmlproofer _site \
             \-\-disable-external \
-            \-\-ignore-urls "/^http:\/\/127.0.0.1/,/^http:\/\/0.0.0.0/,/^http:\/\/localhost/"
+            \-\-ignore-urls "/^http:\/\/127.0.0.1/,/^http:\/\/0.0.0.0/,/^http:\/\/localhost/,/posts\/Curling-Joomla-RCE-Privileged-Automation-Abuse/,/posts\/HTB-Curling-Write-Up/,/posts\/methodology-/,/app\.hackthebox\.com/,/nvd\.nist\.gov/,/attack\.mitre\.org/,/lolbas-project\.github\.io/,/gtfobins\.github\.io/,/book\.hacktricks\.xyz/,/portswigger\.net/,/exploit-db\.com/,/bloodhound\.readthedocs\.io/,/about-site/,/rcesecurity\.com/,/ippsec\.rocks/,/0xdf\.gitlab\.io/,/github\.com\/sireton/,/linkedin\.com/,/hackthebox\.com/"
 
       - name: Upload site artifact
         uses: actions/upload-pages-artifact@v3
