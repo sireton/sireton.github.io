@@ -1,7 +1,9 @@
 ---
-title: "Methodology — Tools Master List"
+title: "Reference — Tools Master List"
 date: 2026-01-01
-categories: [Tools & Methodologies]
+categories:
+  - Tools & Methodologies
+  - Reference
 tags: [Methodology, Tools, nmap, BloodHound, impacket, hashcat, Reference]
 description: "Full tool reference organized by phase — recon, web, exploitation, post-exploitation, password attacks — with purpose and command references."
 ---

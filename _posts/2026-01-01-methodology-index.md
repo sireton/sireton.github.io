@@ -1,10 +1,11 @@
 ---
-title: "Pentest Methodology — Index"
+title: "Methodology — Index & Overview"
 date: 2026-01-01
-categories: [Tools & Methodologies]
+categories:
+  - Tools & Methodologies
+  - Methodology
 tags: [Methodology, CPTS, Pentest, Reference]
-description: "A living methodology reference built around the HTB CPTS curriculum. Covers the full engagement lifecycle from recon through reporting with annotated command references and checklists."
-pin: false
+description: "A living methodology reference built around the HTB CPTS curriculum. Covers the full engagement lifecycle from recon through reporting."
 ---
 
 This is a living reference document built from my pentest methodology vault — a structured set of notes I maintain and update after every engagement or training module. It's organized around the HTB CPTS curriculum but draws from real engagement experience and continuous research.

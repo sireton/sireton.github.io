@@ -1,7 +1,9 @@
 ---
 title: "reconX — Automated Engagement Recon Script"
 date: 2026-03-23
-categories: [Tools & Methodologies]
+categories:
+  - Tools & Methodologies
+  - Tools
 tags: [Tools, Recon, Automation, Bash, nmap, ffuf, Enumeration]
 description: "reconX is a bash script I built to automate the initial enumeration phase of a pentest engagement — chaining nmap, ffuf, and service-specific enumeration into a structured, timestamped output directory."
 ---

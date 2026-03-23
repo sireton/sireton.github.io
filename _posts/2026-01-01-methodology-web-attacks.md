@@ -1,7 +1,9 @@
 ---
-title: "Methodology — Web Attacks"
+title: "06 — Web Attacks"
 date: 2026-01-01
-categories: [Tools & Methodologies]
+categories:
+  - Tools & Methodologies
+  - Methodology
 tags: [Methodology, Web Attacks, SQLi, LFI, SSRF, XXE, File Upload, Burp Suite]
 description: "Web attack methodology — checklist, SQLi/LFI/SSRF/XXE quick detection, command injection, file upload attacks, and Burp Suite workflow."
 ---

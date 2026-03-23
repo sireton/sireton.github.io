@@ -1,7 +1,9 @@
 ---
-title: "Methodology — Pillaging"
+title: "07 — Pillaging"
 date: 2026-01-01
-categories: [Tools & Methodologies]
+categories:
+  - Tools & Methodologies
+  - Methodology
 tags: [Methodology, Pillaging, Credential Hunting, SSH Keys, Browser Passwords, AWS]
 description: "Pillaging methodology — Linux and Windows credential hunting, browser data, shell history, config files, SSH keys, cloud credentials."
 ---

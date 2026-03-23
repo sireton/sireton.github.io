@@ -1,7 +1,9 @@
 ---
-title: "Methodology — Foothold"
+title: "02 — Foothold"
 date: 2026-01-01
-categories: [Tools & Methodologies]
+categories:
+  - Tools & Methodologies
+  - Methodology
 tags: [Methodology, Foothold, Exploitation, CVE, FTP, SSH, WinRM, Tomcat]
 description: "Foothold phase methodology — service-based entry points, CVE exploitation workflow, default credential checks, and web application entry vectors."
 ---

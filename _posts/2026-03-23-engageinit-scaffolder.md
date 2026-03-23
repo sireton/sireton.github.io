@@ -1,9 +1,11 @@
 ---
 title: "engageinit — Engagement Note Scaffolder"
 date: 2026-03-23
-categories: [Tools & Methodologies]
+categories:
+  - Tools & Methodologies
+  - Tools
 tags: [Tools, Automation, Bash, Reporting, Notes, Obsidian]
-description: "engageinit is a bash script that generates a complete, pre-structured engagement directory from a target name — pre-filled markdown templates, evidence capture headers, and a ready-to-use notes vault."
+description: "engageinit is a bash script that generates a complete, pre-structured engagement directory from a target name — pre-filled markdown templates, evidence capture scripts, and a ready-to-use notes vault."
 ---
 
 One thing I've noticed across engagements is that the quality of reporting is heavily influenced by note-taking that happens in the moment, not afterward. Screenshots get lost, command output disappears from terminal history, the exact syntax of a working payload is forgotten. The fix isn't discipline — it's removing friction from the note-taking process at the point when you're in the middle of exploiting a target and the last thing you want to do is organize files.

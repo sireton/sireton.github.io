@@ -1,7 +1,9 @@
 ---
-title: "Methodology — Lateral Movement & Pivoting"
+title: "04 — Lateral Movement"
 date: 2026-01-01
-categories: [Tools & Methodologies]
+categories:
+  - Tools & Methodologies
+  - Methodology
 tags: [Methodology, Lateral Movement, Pivoting, ligolo-ng, chisel, Pass-the-Hash, SSH Tunneling]
 description: "Lateral movement methodology — SSH tunneling, chisel, ligolo-ng, pass-the-hash, pass-the-ticket, remote execution techniques."
 ---

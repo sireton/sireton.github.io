@@ -1,7 +1,9 @@
 ---
-title: "Methodology — Recon & Enumeration"
+title: "01 — Recon & Enumeration"
 date: 2026-01-01
-categories: [Tools & Methodologies]
+categories:
+  - Tools & Methodologies
+  - Methodology
 tags: [Methodology, Recon, nmap, ffuf, SMB, LDAP, DNS, Enumeration]
 description: "Recon phase methodology — full checklist, nmap workflow, web fuzzing, SMB/DNS/LDAP enumeration commands with annotated explanations."
 ---

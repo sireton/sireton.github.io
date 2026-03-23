@@ -1,7 +1,9 @@
 ---
-title: "Methodology — Reporting"
+title: "08 — Reporting"
 date: 2026-01-01
-categories: [Tools & Methodologies]
+categories:
+  - Tools & Methodologies
+  - Methodology
 tags: [Methodology, Reporting, CVSS, Evidence Capture, Pentest Report]
 description: "Reporting methodology — CVSS scoring reference, evidence capture workflow, finding documentation checklist, and report template links."
 ---

@@ -1,9 +1,11 @@
 ---
-title: "Methodology — Active Directory Attack Chain"
+title: "05 — Active Directory"
 date: 2026-01-01
-categories: [Tools & Methodologies]
+categories:
+  - Tools & Methodologies
+  - Methodology
 tags: [Methodology, Active Directory, BloodHound, Kerberos, Kerberoasting, DCSync, MITRE, Red Team]
-description: "Full AD attack methodology — from unauthenticated enumeration to Domain Admin. Covers Kerberoasting, AS-REP Roasting, BloodHound, ACL abuse, credential dumping, and the classic External → DA chain."
+description: "Full AD attack methodology — unauthenticated enumeration to Domain Admin. Covers Kerberoasting, AS-REP Roasting, BloodHound, ACL abuse, DCSync."
 ---
 
 > 📁 **Source:** [github.com/sireton/pentest-vault/05-Active-Directory](https://github.com/sireton/pentest-vault)  

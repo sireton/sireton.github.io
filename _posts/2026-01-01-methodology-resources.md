@@ -1,7 +1,9 @@
 ---
-title: "Methodology — Wordlists & Resources"
+title: "Reference — Wordlists & Resources"
 date: 2026-01-01
-categories: [Tools & Methodologies]
+categories:
+  - Tools & Methodologies
+  - Reference
 tags: [Methodology, Wordlists, SecLists, hashcat, Resources, Reference]
 description: "Essential wordlist paths, online resources, and hashcat mode quick reference for pentest engagements."
 ---
