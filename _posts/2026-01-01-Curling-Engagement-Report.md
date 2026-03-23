@@ -8,6 +8,8 @@ description: "Penetration test report for HTB Curling. Critical findings include
 image:
   path: /assets/img/curling/1-nmap-scan.png
   alt: "Curling – Penetration Test Report"
+pin: true
+
 ---
 
 <div style="border-left: 4px solid #e74c3c; padding: 0.5rem 1rem; background: rgba(231,76,60,0.05); margin-bottom: 2rem;">
