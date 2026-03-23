@@ -9,15 +9,6 @@ pin: true
 
 ---
 
-<div style="border-left: 4px solid #e74c3c; padding: 0.5rem 1rem; background: rgba(231,76,60,0.05); margin-bottom: 2rem;">
-<strong>Classification:</strong> Portfolio Demonstration &nbsp;|&nbsp;
-<strong>Author:</strong> Sam Ireton &nbsp;|&nbsp;
-<strong>Date:</strong> 2026-01-01 &nbsp;|&nbsp;
-<strong>Version:</strong> 1.0
-</div>
-
----
-
 ## Report Information
 
 | Field | Detail |
