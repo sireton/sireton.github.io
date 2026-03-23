@@ -6,16 +6,6 @@ categories:
 tags: [HTB, Linux, Medium, Web Exploitation, Mass Assignment, CVE-2024-46987, Privilege Escalation, MinIO, SSH, Credential Exposure]
 description: "Penetration test report for HTB Facts. Full-chain root compromise via Camaleon CMS mass assignment (CVE-2024-46987), exposed MinIO credentials, SSH key cracking, and sudo facter misconfiguration."
 pin: true
----
-
----
-
-<div style="border-left: 4px solid #e74c3c; padding: 0.5rem 1rem; background: rgba(231,76,60,0.05); margin-bottom: 2rem;">
-<strong>Classification:</strong> Portfolio Demonstration &nbsp;|&nbsp;
-<strong>Author:</strong> Sam Ireton &nbsp;|&nbsp;
-<strong>Date:</strong> 2026-02-13 &nbsp;|&nbsp;
-<strong>Version:</strong> 1.0
-</div>
 
 ---
 
