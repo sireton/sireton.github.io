@@ -51,8 +51,7 @@ jobs:
         run: |
           bundle exec htmlproofer _site \
             \-\-disable-external \
-            \-\-ignore-urls "/^http:\/\/127.0.0.1/,/^http:\/\/0.0.0.0/,/^http:\/\/localhost/,/posts\/Curling-Joomla-RCE-Privileged-Automation-Abuse/,/posts\/HTB-Curling-Write-Up/,/posts\/methodology-/,/app\.hackthebox\.com/,/nvd\.nist\.gov/,/attack\.mitre\.org/,/lolbas-project\.github\.io/,/gtfobins\.github\.io/,/book\.hacktricks\.xyz/,/portswigger\.net/,/exploit-db\.com/,/bloodhound\.readthedocs\.io/,/about-site/,/rcesecurity\.com/,/ippsec\.rocks/,/0xdf\.gitlab\.io/,/github\.com\/sireton/,/linkedin\.com/,/hackthebox\.com/"
-
+            \-\-ignore-urls "/^http:\/\/127.0.0.1/,/^http:\/\/0.0.0.0/,/^http:\/\/localhost/,/\/posts\/HTB-Curling-Write-Up\//,/\/posts\/Curling-Joomla-RCE-Privileged-Automation-Abuse\//,/\/posts\/methodology-/,/hackthebox\.com/,/nvd\.nist\.gov/,/attack\.mitre\.org/,/lolbas-project\.github\.io/,/gtfobins\.github\.io/,/book\.hacktricks\.xyz/,/portswigger\.net/,/exploit-db\.com/,/bloodhound\.readthedocs\.io/,/\/about-site\//,/rcesecurity\.com/,/ippsec\.rocks/,/0xdf\.gitlab\.io/,/github\.com/,/linkedin\.com/"
       - name: Upload site artifact
         uses: actions/upload-pages-artifact@v3
         with:
