@@ -1,6 +1,6 @@
 ---
 title: "08 — Reporting"
-date: 2026-01-01
+date: 2026-01-04
 categories:
   - Tools & Methodologies
   - Methodology

@@ -1,6 +1,6 @@
 ---
 title: "02 — Foothold"
-date: 2026-01-01
+date: 2026-01-10
 categories:
   - Tools & Methodologies
   - Methodology

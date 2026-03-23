@@ -1,6 +1,6 @@
 ---
 title: "07 — Pillaging"
-date: 2026-01-01
+date: 2026-01-05
 categories:
   - Tools & Methodologies
   - Methodology
