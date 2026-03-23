@@ -1,6 +1,6 @@
 ---
 title: "06 — Web Attacks"
-date: 2026-01-06
+date: 2025-12-06
 categories:
   - Tools & Methodologies
   - Methodology

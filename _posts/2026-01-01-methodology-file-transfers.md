@@ -1,6 +1,6 @@
 ---
 title: "Reference — File Transfer Methods"
-date: 2026-01-02
+date: 2025-12-02
 categories:
   - Tools & Methodologies
   - Reference

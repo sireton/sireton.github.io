@@ -1,6 +1,6 @@
 ---
 title: "05 — Active Directory"
-date: 2026-01-07
+date: 2025-12-07
 categories:
   - Tools & Methodologies
   - Methodology

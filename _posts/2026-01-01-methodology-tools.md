@@ -1,6 +1,6 @@
 ---
 title: "Reference — Tools Master List"
-date: 2026-01-03
+date: 2025-12-03
 categories:
   - Tools & Methodologies
   - Reference
