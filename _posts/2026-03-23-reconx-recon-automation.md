@@ -211,4 +211,4 @@ A few choices worth explaining:
 
 ---
 
-*See also: [Recon Methodology Notes](/posts/methodology-recon/) · [HTB Curling Write-Up](/posts/HTB-Curling-Write-Up/) (reconX used for initial enumeration)*
+*See also: [Recon Methodology Notes](/posts/methodology-recon/) · [HTB Curling Write-Up](/posts/Curling-Joomla-RCE-Privileged-Automation-Abuse/) (reconX used for initial enumeration)*
