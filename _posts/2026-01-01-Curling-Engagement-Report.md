@@ -1,5 +1,5 @@
 ---
-title: "Curling – Penetration Test Report"
+title: "Curling – Engagement Report"
 date: 2026-01-01
 categories:
   - Pentest Reports
