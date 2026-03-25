@@ -2,7 +2,7 @@
 title: "M365 Direct Send Abuse: What Happens When the Feature Is the Vulnerability"
 date: 2026-03-25
 description: "Direct Send is a Microsoft 365 feature designed to let printers send email. It also lets anyone on the internet impersonate your users, bypass your MX security gateway, and land in the inbox -- all without credentials, a CVE, or a compromised account. And it's enabled by default."
-categories: [Threat Research]
+categories: [Case Studies]
 tags:
   - Phishing
   - Social Engineering
@@ -14,6 +14,7 @@ tags:
   - Threat Research
   - Current Events
   - Vulnerability Management
+pin: true
 ---
 
 There is a specific kind of security failure that is harder to explain than a missed patch or a weak password. It is the failure where every control in your stack behaves exactly as designed, generates exactly the right signals, and the attack succeeds anyway. No CVE. No zero-day. No compromised account. Just a gap between where one control's coverage ends and where the next one begins.
