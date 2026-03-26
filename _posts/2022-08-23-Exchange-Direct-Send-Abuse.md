@@ -1,6 +1,6 @@
 ---
 title: "M365 Direct Send Abuse - What Happens When the Feature Is the Vulnerability"
-date: 2026-03-23
+date: 2022-08-23
 description: "Direct Send is a Microsoft 365 feature designed to let printers send email. It also lets anyone on the internet impersonate your users, bypass your MX security gateway, and land in the inbox -- all without credentials, a CVE, or a compromised account. And it's enabled by default."
 categories: [Case Studies]
 tags:
