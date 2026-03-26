@@ -1,5 +1,5 @@
 ---
-title: "The Signal Campaign Isn't About Signal"
+title: "2026 Signal Campaign: What Encryption Doesn't Protect"
 date: 2026-03-22
 categories: [Blog Posts]
 tags: [Threat Intelligence, Social Engineering, Russia, Signal, Phishing, Opinion, OPSEC]
