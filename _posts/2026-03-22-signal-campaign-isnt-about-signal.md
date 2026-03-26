@@ -3,14 +3,12 @@ title: "The Signal Campaign Isn't About Signal"
 date: 2026-03-22
 categories: [Blog Posts]
 tags: [Threat Intelligence, Social Engineering, Russia, Signal, Phishing, Opinion, OPSEC]
-description: "Russian intelligence isn't breaking Signal's encryption. They're breaking the humans who use it. What the current phishing campaign tells us about where the actual attack surface is."
+description: "Russian intelligence isn't breaking Signal's encryption. They're breaking the humans who trust it by exploiting one assumption: that encrypted means secure"
 ---
 
-This week the FBI and CISA issued a joint advisory confirming what Dutch and German intelligence had been warning about for weeks: Russian intelligence services are running a large-scale campaign against Signal and WhatsApp users, and it's been compromising thousands of accounts. Government officials, military personnel, journalists, politicians.
-
-The news coverage has mostly focused on Signal. Whether it's safe. Whether end-to-end encryption is compromised. Whether people should stop using it.
-
-That's the wrong question, and focusing on it misses what's actually interesting about this campaign.
+This week the FBI and CISA issued a joint advisory confirming what Dutch and German intelligence had been warning about for weeks: Russian intelligence services are running a coordinated campaign targeting Signal and WhatsApp users. Thousands of accounts compromised. Government officials, military personnel, journalists, politicians.
+The coverage that followed asked predictable questions. Is Signal safe? Is end-to-end encryption broken? Should people stop using it? Those questions dominated the news cycle and almost entirely missed the point.
+Signal's encryption is fine. It was never the target. What Russian intelligence is actually doing is simpler, more instructive, and significantly harder to patch: they are exploiting the gap between what people believe encrypted communication protects and what it actually protects. The cryptography held. The mental model didn't. Here's what that actually means.
 
 ## What's Actually Happening
 
