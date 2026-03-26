@@ -248,31 +248,7 @@ echo "[+] Evidence capture: $ENGDIR/evidence/capture.sh \"description\""
 # Output lives in ./engagements/<target>-<date>/
 ```
 
----
 
-## Integration with reconX
-
-engageinit pairs naturally with [reconX] — run engageinit first to set up the workspace, then reconX to populate the `01-Recon.md` notes with structured output:
-
-```bash
-./engageinit.sh Curling
-./reconx.sh 10.129.71.236
-# reconX output auto-links to the engagement directory
-```
-
----
-
-## Installation
-
-```bash
-git clone https://github.com/sireton/engageinit
-cd engageinit
-chmod +x engageinit.sh
-```
-
-No dependencies beyond bash. Works on any Linux/macOS pentest environment.
-
----
 
 ## Design Notes
 
@@ -282,4 +258,4 @@ No dependencies beyond bash. Works on any Linux/macOS pentest environment.
 
 ---
 
-*See also: [reconX Automation Script](/posts/reconx-recon-automation/) · [Pentest Methodology Notes](/posts/methodology-index/)*
+*See also: [Pentest Methodology Notes](/posts/methodology-index/)*
