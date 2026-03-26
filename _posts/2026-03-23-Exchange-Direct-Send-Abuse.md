@@ -21,13 +21,13 @@ There's a specific kind of vulnerability that unsettles even the most experience
 
 That is the nature of Microsoft 365 Direct Send abuse. Microsoft has only recently begun to address it, despite the underlying service being exposed for years.
 
-The trigger for this investigation was a forwarded email. A user noticed something was off. A message in her inbox appeared to come from her own address, paired with a Chase Bank lure and an urgent subject line about an expiring mailbox. The social engineering itself was unremarkable. What stood out was the delivery. The message arrived through Microsoft's own mail infrastructure, was treated as an internal sender, and never passed through the organization's third party security gateway. No credentials were used to impersonate her to herself. That is the attack surface this post examines.
+Direct Send abuse exposes a gap that exists not because of misconfiguration, but because of design. It allows unauthenticated messages to be delivered through Microsoft’s infrastructure in a way that can bypass key email security controls and be treated as internal traffic.
 
-What makes this particularly dangerous is the level of believability it enables. A lookalike domain or a display name spoof introduces subtle indicators users are trained to question: a slightly incorrect address, an external sender banner, a gateway warning. Direct Send abuse removes those signals entirely. The email can arrive from the correct address, through Microsoft infrastructure, without any of the external routing indicators that typically betray a spoofed message.
+What makes this particularly dangerous is the level of believability it presents. Traditional spoofing techniques often introduce indicators users are trained to question, such as altered domains, external sender banners, or gateway warnings. Direct Send abuse removes many of those signals. Messages can arrive through trusted infrastructure without the routing indicators that typically expose a spoof.
 
-This allows an attacker to send a wire transfer request that appears to come from a CFO, a password reset that appears to come from IT, or an urgent exception that appears to come from leadership, while passing the basic trust checks users rely on. The attack does not require sophisticated social engineering when the delivery path itself provides credibility.
+This creates a scenario where attackers can send messages that appear to originate from internal users or trusted roles while passing basic trust checks. In these cases, the effectiveness of the attack is not driven by sophisticated social engineering, but by the credibility provided by the delivery path itself.
 
-This post covers how Direct Send is abused, why organizations with otherwise mature email security postures are still vulnerable, and what the interplay between integrity controls, availability trade offs, and default configurations looks like when you pull it apart. It also includes authorized proof of concept testing and the configuration changes defenders can use to close the gap.
+This post examines how Direct Send is abused, why organizations with otherwise mature email security postures remain vulnerable, and how integrity controls, availability trade offs, and default configurations intersect to create this gap. It also includes authorized proof of concept testing and the configuration changes defenders can use to mitigate the risk.
 
 ---
 
