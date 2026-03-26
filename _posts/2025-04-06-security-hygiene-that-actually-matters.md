@@ -1,6 +1,6 @@
 ---
 title: "Security Hygiene That Actually Matters (And What Doesn't)"
-date: 2026-03-23
+date: 2025-04-06
 categories: [Blog Posts]
 tags: [Security Awareness, Practical Security, Defense, User Education]
 description: "Most security advice for regular people is either obvious, impractical, or wrong. Here's what the research and real-world attack data says actually moves the needle."
