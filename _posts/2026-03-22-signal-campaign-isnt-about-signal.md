@@ -12,23 +12,27 @@ Signal's encryption is fine. It was never the target. What Russian intelligence 
 
 ## What's Actually Happening
 
-The attackers aren't breaking Signal's encryption. They're not exploiting a vulnerability in the app. The cryptography is fine.
+What they're doing is simpler than the coverage suggests, and it runs in two distinct stages.
 
-What they're doing is simpler and more instructive: they're impersonating Signal support accounts, sending targets messages about suspicious activity on their account or a "possible data leak," and asking the target to share their SMS verification code and PIN. If the target does, the attacker uses those credentials to register the account on a new device. Past messages are gone, but the account is now theirs.
+**Stage 1: Credential phishing.** Attackers impersonate Signal support accounts, sending targets messages about suspicious activity or a "possible data leak" and asking them to share their SMS verification code and PIN. If the target complies, the attacker registers the account on a new device. Past messages are gone. The account is now theirs.
 
-The second technique is more elegant. Signal has a legitimate feature called "linked devices" that lets you connect additional devices to your account, so your desktop can receive messages alongside your phone. The attackers are sending malicious QR codes disguised as group invite links, security alerts, or legitimate Signal pairing instructions. When a target scans one, they unknowingly add the attacker's device to their account. The attacker can now read messages in real time. The victim keeps full access and has no indication anything changed.
+**Stage 2: Silent device linking.** Signal has a legitimate feature called "linked devices" that lets you connect additional devices to your account, so your desktop can receive messages alongside your phone. Attackers are sending malicious QR codes disguised as group invite links, security alerts, or legitimate pairing instructions. When a target scans one, they unknowingly add the attacker's device to their account. The attacker can read messages in real time. The victim keeps full access and has no indication anything changed.
 
-The Dutch intelligence agencies were specific in their advisory: APT44 (Sandworm) has even been using devices captured on the battlefield in Ukraine, phones from compromised military personnel, to conduct further exploitation via Signal, because those devices were already trusted contacts in target accounts.
+*Source: [FBI/CISA Joint Advisory – Compromise of Signal Messaging Application](https://www.cisa.gov)*
 
-## The Lesson That Isn't New
+APT44 (Sandworm) has taken this further. Dutch intelligence confirmed they have been using devices captured on the battlefield in Ukraine, phones taken from compromised military personnel, to conduct further exploitation via Signal. Those devices were already trusted contacts in target accounts, making the access invisible.
 
-End-to-end encryption protects the message in transit. It does not protect the account. Those are different things.
+*Source: [AIVD/MIVD Advisory – Russian Digital Espionage Against Signal](https://www.aivd.nl)*
 
-The same principle applies to every "secure" communication tool. Encrypted email is useless if an attacker has your email password. A password manager doesn't help if the attacker has your master password. Signal's encryption doesn't help if the attacker is logged into your Signal account.
+## The Lesson Isn't New
 
-This sounds obvious. In practice, it's a distinction that a lot of people, including people who should know better, which the "current and former U.S. government officials" in the advisory suggests, don't internalize. The encryption becomes a psychological anchor. People treat "uses Signal" as a proxy for "communication is secure," when the actual security model is more granular than that.
+End-to-end encryption protects the message in transit. It does not protect the account. Those are different threat surfaces, and conflating them is exactly what this campaign exploits.
 
-The adversaries clearly understand this. The campaigns started in Ukraine, where they were specifically targeting military personnel who had adopted Signal as a more secure alternative to unencrypted channels. The tools the defenders chose as an upgrade became the attack surface, not because the tools were bad, but because the humans using them hadn't shifted their mental model of what "secure" actually meant in practice.
+The distinction holds across every tool in the stack. Encrypted email is useless if the attacker has your password. A password manager doesn't help if they have your master credential. The encryption is irrelevant once someone else controls the account.
+
+The advisory names "current and former U.S. government officials" among the compromised. These are not unsophisticated users. The problem is that encryption becomes a psychological anchor. "Uses Signal" gets treated as a proxy for "communication is secure," and that shortcut is what the attackers are targeting.
+
+The campaign started in Ukraine for a reason. Russian intelligence was specifically going after military personnel who had adopted Signal as an upgrade from unencrypted channels. The tools the defenders chose became the attack surface, not because the tools were bad, but because the mental model never caught up with the technology.
 
 ## Why This Matters Beyond Espionage
 
