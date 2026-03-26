@@ -252,7 +252,7 @@ echo "[+] Evidence capture: $ENGDIR/evidence/capture.sh \"description\""
 
 ## Integration with reconX
 
-engageinit pairs naturally with [reconX](/posts/reconx-recon-automation/) — run engageinit first to set up the workspace, then reconX to populate the `01-Recon.md` notes with structured output:
+engageinit pairs naturally with [reconX] — run engageinit first to set up the workspace, then reconX to populate the `01-Recon.md` notes with structured output:
 
 ```bash
 ./engageinit.sh Curling
