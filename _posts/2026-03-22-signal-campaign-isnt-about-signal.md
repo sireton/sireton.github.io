@@ -38,26 +38,28 @@ The campaign started in Ukraine for a reason. Russian intelligence was specifica
 
 The targets in the advisory are high-value intelligence targets: government officials, military personnel, journalists. Most people reading this aren't in that category.
 
-But the technique scales. The QR code phishing attack in particular, tricking a user into scanning a code that silently adds a device to their account, works against anyone. It doesn't require nation-state resources. It requires a convincing message and a target who scans without thinking. The same playbook that Russian intelligence services refined against Ukrainian military targets will appear in criminal toolkits.
+But the technique scales. The QR code phishing attack in particular requires no nation-state resources. It requires a convincing message and a target who scans without thinking. The same playbook refined against Ukrainian military targets will appear in criminal toolkits, and in some cases already has.
 
-WhatsApp had a variant called "GhostPairing" documented last year, the same device-linking abuse, applied broadly. These techniques move from state actors to criminal groups on a compressed timeline now.
+WhatsApp had a variant called "GhostPairing" documented last year, the same device-linking abuse applied broadly. These techniques move from state actors to criminal groups on a compressed timeline. The advisory describes a state-sponsored campaign. What follows is a commoditised one.
+
+*Source: [Malwarebytes – Signal and WhatsApp Accounts Targeted in Phishing Campaign](https://www.malwarebytes.com/blog/news/2026/03/signal-and-whatsapp-accounts-targeted-in-phishing-campaign)*
 
 ## What Actually Protects You
 
-The advisory is clear and the fixes are simple:
+The fixes are straightforward. The advisory is clear on all of them.
 
 **Never share your verification code or PIN with anyone.** Signal and WhatsApp will never ask for these via an in-app message. The only legitimate use of your SMS verification code is when you install the app fresh. Any message asking for it is a phishing attempt, regardless of how official it looks.
 
-**Check your linked devices regularly.** In Signal: Settings → Linked Devices. In WhatsApp: Settings → Linked Devices. If you see a device you don't recognize, remove it immediately. This is a five-second check that most people have never done.
+**Check your linked devices regularly.** In Signal: Settings → Linked Devices. In WhatsApp: Settings → Linked Devices. If you see a device you don't recognise, remove it immediately. This is a five-second check that most people have never done.
 
-**Be skeptical of QR codes from unexpected sources.** The attack works because people have been conditioned to scan QR codes without thinking. A QR code sent via a Signal message, even from a known contact, deserves the same scrutiny as a link in an email from an unknown sender.
+**Be skeptical of QR codes from unexpected sources.** The attack works because people have been conditioned to scan without thinking. A QR code sent via Signal, even from a known contact, deserves the same scrutiny as a link from an unknown sender.
 
-**Registration lock is worth enabling.** Signal has a registration lock feature (Settings → Account → Registration Lock) that requires your PIN when someone attempts to register your number on a new device. This doesn't stop the linked-device attack, but it blocks the account takeover variant.
+**Enable registration lock.** Signal's registration lock feature (Settings → Account → Registration Lock) requires your PIN when someone attempts to register your number on a new device. It does not stop the linked-device attack, but it blocks the credential phishing variant cold.
 
-The campaign is a useful reminder that the human layer of any security system will always be the most interesting attack surface. The cryptography held. The people didn't, not because they were careless, but because they'd been given a mental model of the tool that didn't match its actual security boundaries.
+The campaign is a clean illustration of where the actual attack surface sits. The cryptography held. The mental model didn't. Not because the users were careless, but because they were operating with an incomplete picture of what the tool actually protects.
 
-That mismatch is the vulnerability. It's also one of the more fixable ones.
+That mismatch is the vulnerability.
 
 ---
 
-*Sources: [The Hacker News](https://thehackernews.com/2026/03/fbi-warns-russian-hackers-target-signal.html) · [Malwarebytes](https://www.malwarebytes.com/blog/news/2026/03/signal-and-whatsapp-accounts-targeted-in-phishing-campaign) · [Help Net Security](https://www.helpnetsecurity.com/2026/03/23/russian-hackers-signal-phishing-campaign/) · [The Register](https://www.theregister.com/2026/03/09/dutch_spies_say_russian_cybercrims/)*
+*Sources: [FBI/CISA Joint Advisory](https://www.cisa.gov) · [AIVD/MIVD Advisory](https://www.aivd.nl) · [The Hacker News](https://thehackernews.com/2026/03/fbi-warns-russian-hackers-target-signal.html) · [Help Net Security](https://www.helpnetsecurity.com/2026/03/23/russian-hackers-signal-phishing-campaign/) · [Malwarebytes](https://www.malwarebytes.com/blog/news/2026/03/signal-and-whatsapp-accounts-targeted-in-phishing-campaign) · [The Register](https://www.theregister.com/2026/03/09/dutch_spies_say_russian_cybercrims/)*
