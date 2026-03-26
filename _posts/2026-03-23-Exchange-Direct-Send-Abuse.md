@@ -19,15 +19,15 @@ pin: true
 
 There's a specific kind of vulnerability that unsettles even the most experienced security engineers. The kind that lets any bored 'computer enthusiast' with time on their hands bypass every control in your stack, despite your best attempts at defense in depth. No CVE. No zero-day. No compromised account. It's insecure by design.
 
-That is the nature of Microsoft 365 Direct Send abuse. Microsoft has only recently begun to address it, despite the underlying service being exposed for years.
+That is the nature of Microsoft 365 DirectSend abuse. Microsoft has only recently begun to address it, despite the underlying service being exposed for years.
 
-Direct Send abuse exposes a gap that exists not because of misconfiguration, but because of design. It allows unauthenticated messages to be delivered through Microsoft’s infrastructure in a way that can bypass key email security controls and be treated as internal traffic.
+`DirectSend` abuse exposes a gap that exists not because of misconfiguration, but because of design. It allows unauthenticated messages to be delivered through Microsoft’s infrastructure in a way that can bypass key email security controls and be treated as internal traffic.
 
-What makes this particularly dangerous is the level of believability it presents. Traditional spoofing techniques often introduce indicators users are trained to question, such as altered domains, external sender banners, or gateway warnings. Direct Send abuse removes many of those signals. Messages can arrive through trusted infrastructure without the routing indicators that typically expose a spoof.
+What makes this particularly dangerous is the level of believability it presents. Traditional spoofing techniques often introduce indicators users are trained to question, such as altered domains, external sender banners, or gateway warnings. `DirectSend` abuse removes many of those signals. Messages can arrive through trusted infrastructure without the routing indicators that typically expose a spoof.
 
 This creates a scenario where attackers can send messages that appear to originate from internal users or trusted roles while passing basic trust checks. In these cases, the effectiveness of the attack is not driven by sophisticated social engineering, but by the credibility provided by the delivery path itself.
 
-This post examines how Direct Send is abused, why organizations with otherwise mature email security postures remain vulnerable, and how integrity controls, availability trade offs, and default configurations intersect to create this gap. It also includes authorized proof of concept testing and the configuration changes defenders can use to mitigate the risk.
+This post examines how `DirectSend` is abused, why organizations with otherwise mature email security postures remain vulnerable, and how integrity controls, availability trade offs, and default configurations intersect to create this gap. It also includes authorized proof of concept testing and the configuration changes defenders can use to mitigate the risk.
 
 ---
 
