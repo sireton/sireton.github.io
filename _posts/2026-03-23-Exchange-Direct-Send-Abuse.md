@@ -17,13 +17,17 @@ tags:
 pin: true
 ---
 
-There is a specific kind of security failure that is harder to explain than a missed patch or a weak password. It is the failure where every control in your stack behaves exactly as designed, generates exactly the right signals, and the attack succeeds anyway. No CVE. No zero-day. No compromised account. Just a gap between where one control's coverage ends and where the next one begins.
+There's a specific kind of vulnerability that unsettles even the most experienced security engineers. The kind that lets any bored 'computer enthusiast' with time on their hands bypass every control in your stack, despite your best attempts at defense in depth. No CVE. No zero-day. No compromised account. It's insecure by design.
 
-This post is about that kind of failure, specifically the one that Microsoft 365 Direct Send abuse exploits, why organizations with mature email security postures are still getting hit by it, and what the interplay between integrity controls, availability trade-offs, and default configurations actually looks like when you pull the thread.
+That is the nature of Microsoft 365 Direct Send abuse. Microsoft has only recently begun to address it, despite the underlying service being exposed for years.
 
-The trigger for this particular investigation was a forwarded email. A user noticed something was off: a message in her inbox that appeared to come from her own address, with a Chase Bank lure and an urgency subject line about an expiring mailbox. The social engineering was unremarkable. What was remarkable was the delivery: the message had arrived through Microsoft's own mail infrastructure, been stamped as an internal sender, and never touched the organization's third-party security gateway. The attacker used zero credentials to impersonate her to herself. That is the attack surface this post is about.
+The trigger for this investigation was a forwarded email. A user noticed something was off. A message in her inbox appeared to come from her own address, paired with a Chase Bank lure and an urgent subject line about an expiring mailbox. The social engineering itself was unremarkable. What stood out was the delivery. The message arrived through Microsoft's own mail infrastructure, was treated as an internal sender, and never passed through the organization's third party security gateway. No credentials were used to impersonate her to herself. That is the attack surface this post examines.
 
-What makes this particularly dangerous is the believability ceiling it removes. A lookalike domain or a display name spoof has tells -- a close-but-wrong address, an external sender banner, a gateway warning. Direct Send abuse has none of those. The email arrives from the exact correct address, through Microsoft's own infrastructure, with no external routing flags. That means an attacker can send a wire transfer request that looks like it came from your CFO, an IT password reset that looks like it came from your helpdesk, or an urgent policy exception that looks like it came from your CEO -- and every visual and technical signal a user has been trained to check will tell them it is legitimate. The attack does not need sophisticated social engineering when the infrastructure itself provides the credibility.
+What makes this particularly dangerous is the level of believability it enables. A lookalike domain or a display name spoof introduces subtle indicators users are trained to question: a slightly incorrect address, an external sender banner, a gateway warning. Direct Send abuse removes those signals entirely. The email can arrive from the correct address, through Microsoft infrastructure, without any of the external routing indicators that typically betray a spoofed message.
+
+This allows an attacker to send a wire transfer request that appears to come from a CFO, a password reset that appears to come from IT, or an urgent exception that appears to come from leadership, while passing the basic trust checks users rely on. The attack does not require sophisticated social engineering when the delivery path itself provides credibility.
+
+This post covers how Direct Send is abused, why organizations with otherwise mature email security postures are still vulnerable, and what the interplay between integrity controls, availability trade offs, and default configurations looks like when you pull it apart. It also includes authorized proof of concept testing and the configuration changes defenders can use to close the gap.
 
 ---
 
@@ -194,11 +198,9 @@ Get-OrganizationConfig | Select RejectDirectSend
 
 > **Authorization Notice:** The following testing was conducted with explicit written authorization against the client's own tenant. Run this only against systems you own or have explicit written permission to test.
 
-The home network I was testing from had port 25 blocked at the ISP level, which is standard. Azure Cloud Shell does not have that restriction, and from Microsoft's perspective, an Azure egress IP is as external and unauthenticated as any other. That makes it a realistic simulation of what the attacker did from their VPS.
+If available to you, Azure Cloud Shell wil have no restrictions on port 25 and from Microsoft's perspective, an Azure egress IP is as external and unauthenticated as any other. That makes it a realistic simulation of what the attacker did from their VPS.
 
 ### Step 1: Confirm Port 25 is Reachable
-
-`netcat` was not available in Cloud Shell, so Python:
 
 ```python
 python3 -c "
@@ -224,7 +226,7 @@ Result:
 
 Microsoft's SMTP frontend is up, responding, and not asking for credentials.
 
-### Step 2: Send the Spoofed Email
+### Step 2: Send the Spoofed Email From External IP
 
 ```python
 python3 << 'EOF'
@@ -275,28 +277,13 @@ Result:
 [!!!] TENANT IS VULNERABLE
 ```
 
-Zero credentials. Under 30 seconds. Delivered.
-
-### Step 3: Confirm Attack Signatures in the Delivered Headers
-
-| Header | Value | What It Means |
-|---|---|---|
-| `AuthAs` | `Anonymous` | Zero credentials used |
-| `CrossTenant-AuthAs` | `Anonymous` | Confirmed across tenant boundary |
-| `SPF` | `softfail ([AZURE-CLOUD-IP])` | External, unauthorized IP |
-| `DKIM` | `none` | No signing |
-| `DMARC` | `fail action=oreject` | Policy fired, did not block |
-| `compauth` | `none reason=451` | Composite auth bypassed |
-| `PTR` | `InfoDomainNonexistent` | No reverse DNS |
-| Delivery destination | `I (Inbox)` | Not junk. Inbox. |
-
 ---
 
 ## Remediation and Hardening
 
-### Priority 1: Enable RejectDirectSend
+### Enable RejectDirectSend
 
-This is the only control that actually closes the vector. Everything else in this section is hardening that you should do regardless.
+This is the only control that actually closes the vector. 
 
 ```powershell
 Set-OrganizationConfig -RejectDirectSend $true
@@ -316,34 +303,7 @@ After enabling, re-run the PoC. You should get:
 550 5.7.68 TenantInboundAttribution; Direct Send not allowed for this organization from unauthorized sources
 ```
 
-That rejection is your proof of remediation.
-
-### Priority 2: Harden SPF
-
-```
-v=spf1 include:spf.protection.outlook.com -all
-```
-
-Move from `~all` to `-all`. Does not stop Direct Send on its own, but it tightens how unauthorized senders from your domain are treated by external mail servers. Read your DMARC aggregate reports before making this change.
-
-### Priority 3: DMARC to p=reject
-
-```
-v=DMARC1; p=reject; rua=mailto:[AGGREGATE-ADDRESS];
-ruf=mailto:[FORENSIC-ADDRESS]; adkim=s; aspf=s;
-```
-
-Stage it: none -> quarantine -> reject. Do not skip steps. Each stage will surface senders you need to fix before tightening further.
-
-### Priority 4: DKIM
-
-Confirm signing is enabled in Exchange Online. If you are running a third-party gateway like Mimecast, consider enabling DKIM signing there as well for dual coverage on the relay path.
-
-```powershell
-Get-DkimSigningConfig | Select Domain, Enabled, Status
-```
-
-### Priority 5: Scope Inbound Connectors to Static IPs
+### Work Around: Scope Inbound Connectors to Static IPs
 
 For any legitimate Direct Send dependency, create a scoped connector. One connector handles multiple IPs or CIDR ranges, no need for one per device.
 
@@ -357,107 +317,9 @@ New-InboundConnector -Name "AuthorizedDeviceRelay" `
   ) `
   -RequireTls $true `
   -RestrictDomainsToIPAddresses $true
+
 ```
 
-### Priority 6: Transport Rule for Spoofed Internal Senders
-
-Server-side rule in Exchange Online mail flow. No impact on authenticated users regardless of location or device. A remote user in another country using OWA never triggers this because their mail travels the authenticated path, not the unauthenticated one this rule targets.
-
-```powershell
-New-TransportRule -Name "Block External Spoofed Internal Senders" `
-  -FromScope NotInOrganization `
-  -SenderDomainIs "[CLIENT-DOMAIN]" `
-  -SetAuditSeverity High `
-  -RejectMessageReasonText "External sender spoofing internal domain"
-```
-
-> If your MX points to a third-party gateway, exclude that gateway's inbound IPs from this rule scope. Mimecast and Proofpoint relay legitimate external mail into your tenant using their own IP ranges, and your rule will fire on those too if you do not account for it.
-
-### Priority 7: RequireTLS on Connectors
-
-While you are in there, flip any `RequireTls: False` connectors where operationally feasible.
-
-```powershell
-Set-InboundConnector -Identity "[CONNECTOR-NAME]" -RequireTls $true
-```
-
----
-
-## Detection and Hunting
-
-### KQL: Defender Advanced Hunting / Sentinel
-
-**Core: auth failures claiming your domain:**
-
-```kql
-EmailEvents
-| where Timestamp > ago(30d)
-| where AuthenticationDetails has "dkim=none"
-| where AuthenticationDetails has "spf=softfail"
-    or AuthenticationDetails has "spf=fail"
-| where AuthenticationDetails has "dmarc=fail"
-| where SenderFromDomain == "[CLIENT-DOMAIN]"
-| project Timestamp, SenderFromAddress, RecipientEmailAddress,
-    Subject, SenderIPv4, DeliveryAction, DeliveryLocation,
-    AuthenticationDetails
-| order by Timestamp desc
-```
-
-**Self-send detection: note the domain extraction fix:**
-
-Do not compare `SenderFromDomain` directly to `RecipientEmailAddress`. Those types will never match. Extract the domain from the recipient address:
-
-```kql
-EmailEvents
-| where Timestamp > ago(30d)
-| where SenderFromDomain == "[CLIENT-DOMAIN]"
-| where AuthenticationDetails has "dkim=none"
-| extend RecipDomain = tostring(split(RecipientEmailAddress, "@")[1])
-| where RecipDomain == "[CLIENT-DOMAIN]"
-| where AuthenticationDetails !has "dkim=pass"
-| project Timestamp, SenderFromAddress, RecipientEmailAddress,
-    Subject, SenderIPv4, DeliveryAction, AuthenticationDetails
-| order by Timestamp desc
-```
-
-**Whitelist-based: exclude known legitimate IPs:**
-
-```kql
-EmailEvents
-| where Timestamp > ago(30d)
-| where SenderFromDomain == "[CLIENT-DOMAIN]"
-| where AuthenticationDetails !has "dkim=pass"
-| where SenderIPv4 !in (
-    "[CONNECTOR-IP-1]",
-    "[CONNECTOR-IP-2]",
-    "[MIMECAST-INBOUND-IP-1]",
-    "[MIMECAST-INBOUND-IP-2]"
-  )
-| project Timestamp, SenderFromAddress, RecipientEmailAddress,
-    Subject, SenderIPv4, DeliveryAction, ThreatTypes
-| order by Timestamp desc
-```
-
-**IOC pivot: hunt by attacker IP:**
-
-```kql
-EmailEvents
-| where Timestamp > ago(30d)
-| where SenderIPv4 == "[ATTACKER-IP]"
-| project Timestamp, SenderFromAddress, RecipientEmailAddress,
-    Subject, SenderIPv4, DeliveryAction, AuthenticationDetails
-```
-
-### PowerShell: Message Trace
-
-`Get-MessageTrace` is deprecated as of September 2025. Use `Get-MessageTraceV2`:
-
-```powershell
-Get-MessageTraceV2 -StartDate (Get-Date).AddDays(-7) -EndDate (Get-Date) |
-  Where-Object { $_.Status -eq "Delivered" -and
-                 $_.SenderAddress -like "*@[CLIENT-DOMAIN]" } |
-  Select-Object Received, SenderAddress, RecipientAddress, Subject
-```
 
 ---
 
