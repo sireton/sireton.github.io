@@ -61,7 +61,7 @@ At the bottom of the same list:
 - **SIM swap: 982 complaints**
 - **Malware: 441 complaints**
 
-![FBI IC3 2024 Crime Types by Complaint Count](/assets/img/2026-04-28-are-you-as-vulnerable-as-they-say/fbi-ic3-2024-crime-types.png)
+![FBI IC3 2024 Crime Types by Complaint Count](/assets/img/2025-04-28-are-you-as-vulnerable-as-they-say/fbi-ic3-2024-crime-types.png)
 *Source: FBI Internet Crime Complaint Center, 2024 Annual Report (released April 2025). [[Full Report]](https://www.ic3.gov/AnnualReport/Reports/2024_IC3Report.pdf)*
 
 Cyber-enabled fraud, which includes phishing, spoofing, tech support scams, and related social engineering, accounted for 83% of all losses reported to the IC3 in 2024. The attacks winning at scale are not sophisticated technical exploits. They are manipulation delivered through digital channels, at volume, targeting the human layer.
