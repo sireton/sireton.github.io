@@ -1,24 +1,17 @@
 ---
-title: "engagekit — Pentest Engagement Workspace Scaffolder"
+title: "engagekit — Pentest Engagement Folder Creator"
 date: 2026-01-18
 categories:
   - Tools & Methodologies
   - Tools
 tags: [Tools, Automation, Python, Pentest, Reporting, Notes, Engagement]
-description: "engagekit is a cross-platform Python script that builds a structured pentest engagement workspace in seconds — pre-populated markdown templates, organised scan folders, a loot tracker, and a timestamped evidence capture helper, all named and dated for the engagement automatically."
+description: "engagekit is a cross-platform Python script that builds a structured pentest engagement workspace in seconds with pre-populated markdown templates, organised scan folders, a loot tracker, and a timestamped evidence capture helper, all named and dated for the engagement automatically."
 ---
 
-Every pentest starts the same way: you have a target, a scope document, and a blank terminal. Before you run a single tool you need somewhere to put the output, a notes structure you can actually navigate under time pressure, and a way to capture evidence without breaking your flow. Setting that up manually before every engagement is friction that adds up.
-
-engagekit removes that friction. One command and you have a complete, pre-structured workspace ready before the first nmap scan fires.
 
 ## The Problem It Solves
 
-The failure mode is familiar. You are mid-engagement, you have a shell, and you need to capture the output of a command that proves exploitability. You open a new terminal tab, try to remember where you decided to put evidence files, create a directory, realise you forgot to name it consistently with the rest of the engagement, and by the time you have sorted it out you have lost the thread of what you were doing.
-
-Good note-taking during a pentest is not about discipline. It is about removing friction at the exact moment when you have the least bandwidth to deal with it.
-
-engagekit solves the setup problem. Run it once before you start and the workspace is there, already organised, already labelled with the client name and date, ready to receive output.
+engagekit solves the slow process of engagment setup for evidence gathering. Run it once before you start and the workspace is there, already organised, already labelled with the client name and date, ready to receive output.
 
 ## What It Generates
 
