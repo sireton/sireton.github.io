@@ -49,7 +49,7 @@ What makes it stick is the simplicity. No malware. No CVE. No foothold required.
 | US-based victims | ~95% |
 | Primary verticals | Financial Services, Healthcare, Manufacturing, Construction |
 | CVE assigned | None -- abuse of a legitimate feature |
-| Credentials required | Zero |
+
 
 Microsoft released the fix, `RejectDirectSend`, in April 2025. The campaign started in May. That one-month window tells you everything about how quickly attackers read release notes.
 
