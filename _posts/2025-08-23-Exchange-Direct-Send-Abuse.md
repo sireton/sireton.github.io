@@ -286,10 +286,12 @@ If you genuinely have no dependency on Direct Send, no printers, no old apps, no
 Microsoft released the fix, RejectDirectSend, in April 2025. The campaign started in May. That one-month window tells you everything about how quickly attackers read release notes. This is the only control that actually closes the vector. 
 
 ```powershell
+#Enable Reject Direct Send
 Set-OrganizationConfig -RejectDirectSend $true
 
 # Verify
 Get-OrganizationConfig | Select RejectDirectSend
+
 # Expected: True
 ```
 
