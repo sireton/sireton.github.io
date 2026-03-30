@@ -1,5 +1,5 @@
 ---
-title: "Living Off the Land: Why LOLBins Are a Defender's Nightmare"
+title: "Living Off the Land - Why LOLBins Are a Defender's Nightmare"
 date: 2025-09-10
 categories:
   - Case Studies
