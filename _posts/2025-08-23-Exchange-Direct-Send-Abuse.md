@@ -37,11 +37,10 @@ This post examines how DirectSend is abused, why mature email security postures 
 
 ## The Threat Landscape
 
-This is not a new technique, but it has had a very active year. Starting in May 2025, multiple threat research teams independently documented ongoing campaigns abusing Direct Send to deliver phishing that looks like it came from inside the target organization. Over 70 organizations confirmed affected, 95% US-based, hitting financial services, healthcare, manufacturing, and construction hardest.
+This is not a new technique, but it has had a very active year. Starting in May 2025, multiple threat research teams independently documented ongoing campaigns abusing Direct Send to deliver phishing that looks like it came from inside the target organization. Over 70 organizations confirmed affected, 95% US-based, hitting financial services, healthcare, manufacturing, and construction hardest. What makes it stick is the simplicity. No malware. No CVE. No foothold required.
 
 *Source: [Varonis Threat Labs -- Ongoing Campaign Abuses Microsoft 365's Direct Send to Deliver Phishing Emails](https://www.varonis.com/blog/direct-send-exploit)*
 
-What makes it stick is the simplicity. No malware. No CVE. No foothold required.
 
 | Metric | Value |
 |---|---|
@@ -335,7 +334,6 @@ This is where the availability tension in email security actually lives. It is n
 
 The practical takeaway for defenders and purple teamers is narrower than most writeups in this space suggest: the control that closes this specific vector is one setting in Exchange Admin Center: `Set-OrganizationConfig -RejectDirectSend $true`. Run the connector audit first, scope your legitimate relay dependencies to static IPs, then enable it. The KQL queries above give you the hunting baseline before and after. Run the PoC against your own tenant. If the email delivers, you have your answer. If it gets a 550, you have your proof of remediation.
 
-*Source: [Microsoft Exchange Team -- Introducing More Control Over Direct Send in Exchange Online](https://techcommunity.microsoft.com/blog/exchange/introducing-more-control-over-direct-send-in-exchange-online/4408790)*
 
 ---
 
