@@ -165,4 +165,4 @@ The folder structure and markdown content are identical regardless of platform.
 
 Full source and documentation: [github.com/sireton/engagekit](https://github.com/sireton/engagekit)
 
-*See also: [reconX Recon Automation Script](/posts/reconx-recon-automation/)*
+*See also: [enumkit — Interactive Pentest Enumeration Script](/posts/enumkit/)*
