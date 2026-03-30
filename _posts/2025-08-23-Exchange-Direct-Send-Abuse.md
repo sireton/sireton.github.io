@@ -59,24 +59,20 @@ Microsoft released the fix, `RejectDirectSend`, in April 2025. The campaign star
 
 ## How Direct Send Works (and Why It's a Problem)
 
-Direct Send is a Microsoft 365 feature meant for internal devices like printers, copiers, and legacy LOB apps that need to send email but do not support modern authentication. Instead of going through OAuth or SMTP AUTH, these devices connect directly to the tenant's smart host and submit mail on behalf of the organization's domain, no credentials involved. Microsoft's own documentation recommends Direct Send only for advanced customers willing to take on the responsibilities of email server admins.
+Direct Send is a Microsoft 365 feature designed for internal devices like printers, copiers, and legacy LOB applications that cannot support modern authentication. Rather than routing through OAuth or SMTP AUTH, these devices connect directly to the tenant's smart host at `<tenant>.mail.protection.outlook.com` on port 25 and submit mail unauthenticated, with no credentials, no token, and no prior relationship with the tenant required.
+
+The endpoint is publicly reachable. Any host on the internet can connect to it, present any `MAIL FROM` address using your domain, and submit a message. Exchange Online accepts the submission, classifies it as internal routing, and delivers it. The message never touches your MX gateway.
+
+That classification is where the problem lives. Exchange Online stamps the message `InternalOrgSender: True` before it enters the filtering stack. By the time anti-spam and anti-phishing controls evaluate it, the message already carries internal trust attribution. SPF fires against the submitting IP and fails or softfails, but enforcement is downstream of that classification. DKIM is absent, but absence is not treated as failure across all pipeline paths. DMARC may quarantine but rarely stops delivery when the message is processed as an internal relay. The auth controls behave exactly as designed. They just were not designed for this delivery path.
 
 *Source: [Microsoft Learn -- Direct Send: Send Mail Directly From Your Device or Application](https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/how-to-set-up-a-multifunction-device-or-application-to-send-email-using-microsoft-365-or-office-365)*
-
-The smart host endpoint looks like this:
-
-```
-<tenantname>.mail.protection.outlook.com
-```
-
-Here is the problem: any machine anywhere on the internet can connect to that endpoint on port 25 or 587, claim any `From` address using your domain, and submit an email, unless you have explicitly told Microsoft not to allow it. No username. No password. No token. No prior relationship with the tenant.
 
 ### The Attack Path
 
 | Step | Action | Detail |
 |---|---|---|
 | 1 | Reconnaissance | Attacker finds valid recipients via OSINT, LinkedIn, or prior breach data |
-| 2 | Connection | Connects directly to `<tenant>.mail.protection.outlook.com:25` -- bypassing any third-party MX gateway entirely |
+| 2 | Connection | Connects directly to `<tenant>.mail.protection.outlook.com:25`, bypassing any third-party MX gateway entirely |
 | 3 | Delivery | Submits email with spoofed `From` address, no credentials. Microsoft stamps it `InternalOrgSender: True` and delivers. |
 
 The MX bypass is the part worth dwelling on. Most organizations route inbound mail through a third-party gateway (Mimecast, Proofpoint, etc.) by pointing their MX record at it. That gateway scans everything it sees. Direct Send does not go through the MX record. The attacker connects directly to Microsoft's SMTP frontend. Your security gateway never gets a look at the message.
@@ -95,32 +91,6 @@ So you get a message that fails every auth check, arrives in the inbox, and gets
 
 ---
 
-## Should Your Environment Even Use Direct Send?
-
-Before jumping to remediation, and before you touch `RejectDirectSend`, this is the question worth sitting with. Because if you disable it without knowing what depends on it, you will find out the hard way when someone's scanner stops emailing PDFs to the accounting team.
-
-The legitimate use cases are real:
-
-| Use Case | What to Do Instead |
-|---|---|
-| Network printers / MFPs | Scope to a static IP via a scoped inbound connector, or migrate to SMTP AUTH with a service account |
-| Legacy LOB apps | Authenticated SMTP or Microsoft Graph API if the app supports it; scoped connector if not |
-| Monitoring and alerting systems | Dedicated mailbox with OAuth, or authenticated relay |
-| On-premises servers | Authenticated connector or modern auth migration |
-| Third-party SaaS sending on your behalf | Add to SPF, configure DKIM in the vendor platform, verify DMARC alignment |
-
-If you have any of these, the path is: audit your inbound connectors, identify what is actually using Direct Send, scope those to specific static IPs via dedicated connectors, then enable `RejectDirectSend` globally. The connectors with scoped IPs will still work. Everything else gets a 554.
-
-```powershell
-# See what you are working with
-Get-InboundConnector | Select Name, SenderIPAddresses, RequireTls
-```
-
-If your connectors show `RequireTls: False`, add that to the hardening list too. It is not what this post is about, but it is overdue.
-
-If you genuinely have no dependency on Direct Send, no printers, no old apps, no scanners using it, just enable the setting and move on. You are done with this attack vector in one command.
-
----
 
 ## The Incident: What the Headers Showed
 
@@ -284,6 +254,51 @@ Result:
 
 ## Remediation and Hardening
 
+### Should Your Environment Even Use Direct Send?
+
+Before jumping to remediation and before you touch `RejectDirectSend`, this is the question worth sitting with. Because if you disable it without knowing what depends on it, you will find out the hard way when someone's scanner stops emailing PDFs to the accounting team.
+
+The legitimate use cases are real:
+
+| Use Case | What to Do Instead |
+|---|---|
+| Network printers / MFPs | Scope to a static IP via a scoped inbound connector, or migrate to SMTP AUTH with a service account |
+| Legacy LOB apps | Authenticated SMTP or Microsoft Graph API if the app supports it; scoped connector if not |
+| Monitoring and alerting systems | Dedicated mailbox with OAuth, or authenticated relay |
+| On-premises servers | Authenticated connector or modern auth migration |
+| Third-party SaaS sending on your behalf | Add to SPF, configure DKIM in the vendor platform, verify DMARC alignment |
+
+If you have any of these, the path is: audit your inbound connectors, identify what is actually using Direct Send, scope those to specific static IPs via dedicated connectors, then enable `RejectDirectSend` globally. The connectors with scoped IPs will still work. Everything else gets a 554.
+
+```powershell
+# See what you are working with
+Get-InboundConnector | Select Name, SenderIPAddresses, RequireTls
+```
+
+If your connectors show `RequireTls: False`, add that to the hardening list too. It is not what this post is about, but it is overdue.
+
+### Work Around: Scope Inbound Connectors to Static IPs
+
+For any legitimate Direct Send dependency, create a scoped connector. One connector handles multiple IPs or CIDR ranges, no need for one per device.
+
+```powershell
+New-InboundConnector -Name "AuthorizedDeviceRelay" `
+  -ConnectorType OnPremises `
+  -SenderIPAddresses @(
+      "[DEVICE-IP-1]",
+      "[DEVICE-IP-2]",
+      "[SITE-SUBNET]/24"
+  ) `
+  -RequireTls $true `
+  -RestrictDomainsToIPAddresses $true
+
+```
+
+
+If you genuinely have no dependency on Direct Send, no printers, no old apps, no scanners using it, just enable the setting and move on. You are done with this attack vector in one command.
+
+---
+
 ### Enable RejectDirectSend
 
 This is the only control that actually closes the vector. 
@@ -306,23 +321,6 @@ After enabling, re-run the PoC. You should get:
 550 5.7.68 TenantInboundAttribution; Direct Send not allowed for this organization from unauthorized sources
 ```
 
-### Work Around: Scope Inbound Connectors to Static IPs
-
-For any legitimate Direct Send dependency, create a scoped connector. One connector handles multiple IPs or CIDR ranges, no need for one per device.
-
-```powershell
-New-InboundConnector -Name "AuthorizedDeviceRelay" `
-  -ConnectorType OnPremises `
-  -SenderIPAddresses @(
-      "[DEVICE-IP-1]",
-      "[DEVICE-IP-2]",
-      "[SITE-SUBNET]/24"
-  ) `
-  -RequireTls $true `
-  -RestrictDomainsToIPAddresses $true
-
-```
-
 
 ---
 
@@ -337,9 +335,6 @@ This is where the availability tension in email security actually lives. It is n
 The practical takeaway for defenders and purple teamers is narrower than most writeups in this space suggest: the control that closes this specific vector is one setting in Exchange Admin Center: `Set-OrganizationConfig -RejectDirectSend $true`. Run the connector audit first, scope your legitimate relay dependencies to static IPs, then enable it. The KQL queries above give you the hunting baseline before and after. Run the PoC against your own tenant. If the email delivers, you have your answer. If it gets a 550, you have your proof of remediation.
 
 *Source: [Microsoft Exchange Team -- Introducing More Control Over Direct Send in Exchange Online](https://techcommunity.microsoft.com/blog/exchange/introducing-more-control-over-direct-send-in-exchange-online/4408790)*
-
-Everything else in this post, the transport rules, the DKIM hygiene, the TLS enforcement on connectors, is hardening that was overdue regardless of this campaign. Direct Send abuse just makes the conversation easier to have.
-
 
 ---
 
