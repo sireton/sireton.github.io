@@ -23,16 +23,15 @@ pin: true
 
 There's a specific kind of vulnerability that unsettles even the most seasoned security engineer. The kind that lets any bored "computer enthusiast" with time on their hands bypass every control in your stack, despite your best attempts at defense in depth. No CVE. No zero-day. No compromised account. It's insecure by design.
 
-That's the nature of Microsoft 365 DirectSend abuse. It's an attack vector that Microsoft has only recently begun to address it, despite the underlying service being exposed for years.
+That is the nature of Microsoft 365 DirectSend abuse. When the vulnerability is the feature, there is no CVE to track and no patch to wait for. Microsoft has only recently begun to address it, despite the underlying service being exposed for years.
 
-DirectSend abuse exposes a gap that exists not because of misconfiguration, but because of design. It allows unauthenticated messages to be delivered through Microsoft’s infrastructure in a way that can bypass key email security controls and be treated as internal traffic.
+DirectSend abuse exposes a gap that exists not because of misconfiguration, but because of design. It allows unauthenticated messages to be delivered through Microsoft's infrastructure in a way that can bypass key email security controls and be treated as internal traffic.
 
 What makes this particularly dangerous is the level of trust and believability it presents to an end user. Traditional spoofing techniques often introduce indicators users are trained to question, such as altered domains, external sender banners, or gateway warnings. DirectSend abuse removes many of those signals. Messages can arrive through trusted infrastructure without the routing indicators that typically expose a spoof.
 
-This creates a scenario where attackers can send messages that appear to originate from internal users or trusted roles while passing basic trust checks. The effectiveness of the attack is not driven by sophisticated social engineering. The delivery path is the credibility. 
+This creates a scenario where attackers can send messages that appear to originate from internal users or trusted roles while passing basic trust checks. The effectiveness of the attack is not driven by sophisticated social engineering. The delivery path is the credibility.
 
-This post examines how DirectSend is abused, why mature email security postures still leave organizations exposed, and how default configurations create the gap. It includes authorized proof of concept testing and the remediation steps defenders can use to close it.
-
+This post examines how DirectSend is abused, why mature email security postures still leave organizations exposed, and how default configurations create the gap. It includes authorized proof of concept testing and the remediation steps defenders can use to close it. The broader question it tries to answer is harder: when the vulnerability is the feature and no fix exists, how reading your own documentation from an attacker's perspective is the foundation of proactive security and finding the gaps your controls were never built to see.
 ---
 
 ## The Threat Landscape
@@ -312,12 +311,11 @@ After enabling, re-run the PoC. You should get:
 
 The question this investigation keeps returning to is not technical. Every header in this email told the correct story. SPF fired. DKIM was absent. DMARC said quarantine. Microsoft's own ML pipeline flagged brand impersonation. The security gateway would have caught it, if it had ever seen the message. None of those controls failed. The architecture failed, because no one had closed the gap between where external filtering ends and where unauthenticated internal delivery begins.
 
-That gap has a name and a fix. `RejectDirectSend` has existed since April 2025. It ships off. The campaign started in May 2025, the month after the control dropped. The organizations targeted through the rest of that year were not organizations without security programs. They were organizations where that one toggle had not been flipped, either because no one knew it existed, because the audit cycle had not reached it, or because the legitimate use case for printers and scanners made it feel risky to touch.
+That gap has a name and a fix. `RejectDirectSend` has existed since April 2025. It ships off. The campaign started in May 2025, the month after the control dropped. The organizations targeted through the rest of that year were not organizations without security programs. They were organizations where that one toggle had not been flipped.
 
-This is where the availability tension in email security actually lives. It is not abstract. Tightening SPF to `-all` before auditing your authorized senders breaks vendor mail. Moving DMARC to `p=reject` before reading your aggregate reports breaks partner forwarding. Enabling `RejectDirectSend` before scoping your device connectors breaks your copiers. Every hardening step in email carries a real operational cost, and that cost is why these controls ship in conservative defaults and why organizations leave them there. Attackers have learned to read that inertia as an attack surface.
+The risk that is hardest to defend against is the one that does not look like a risk. When the vulnerability is built into the feature, there is no CVE to track and no patch to wait for. Some of the most exploitable gaps ship in the documentation, enabled by default, and wait. `RejectDirectSend` took years to arrive. The organizations that avoided this exposure in the interim were not better resourced. They were asking different questions about what their stack permitted.
 
-The practical takeaway for defenders and purple teamers is narrower than most writeups in this space suggest: the control that closes this specific vector is one setting in Exchange Admin Center: `Set-OrganizationConfig -RejectDirectSend $true`. Run the connector audit first, scope your legitimate relay dependencies to static IPs, then enable it. The KQL queries above give you the hunting baseline before and after. Run the PoC against your own tenant. If the email delivers, you have your answer. If it gets a 550, you have your proof of remediation.
-
+Understanding what a feature exposes starts with reading the documentation the way an attacker would. That perspective, approaching configuration reviews and default settings with an eye toward what can be abused rather than what is intended, is where gaps like this become visible before they become incidents. Periodic audits of connector permissions, mail flow rules, and authentication enforcement surface permissive behavior that rarely triggers an alert but sits open for years. When a native control does not exist, that same offensive lens drives the search for compensating controls: what signals does the abuse leave behind, what existing controls can be repositioned to act on them, and what does enforcement look like before the vendor catches up. Features that hide risk under legitimate functionality will always exist. The defenders who find them first are the ones who learned to read their own architecture the way an attacker reads a target.
 
 ---
 
