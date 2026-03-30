@@ -136,8 +136,6 @@ MMH_L=PHISH
 BIMP_SHARED_SU_KEY=Chase
 ```
 
-> **Note:** `IsAnonymousDirectSend: True` can be stripped depending on your DMARC action and pipeline config. If you do not see it, look for `AuthAs: Anonymous` and `CrossTenant-AuthAs: Anonymous`, and those will still be there and tell the same story.
-
 ### IOC Summary (Anonymized)
 
 | Indicator | Value | Significance |
