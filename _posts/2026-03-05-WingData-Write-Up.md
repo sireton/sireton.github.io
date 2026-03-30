@@ -3,6 +3,7 @@ title: "WingData – FTP Server RCE & Privileged Archive Extraction Abuse"
 date: 2026-03-05
 categories:
   - Case Studies
+  - HTB
 tags: [HTB, Linux, Easy, CVE-2025-47812, CVE-2025-4517, privilege-escalation]
 description: "A walkthrough of WingData from HackTheBox Season 10 — an Easy Linux machine covering unauthenticated RCE, credential harvesting, and privilege escalation via a modern tarfile filter bypass."
 image:
