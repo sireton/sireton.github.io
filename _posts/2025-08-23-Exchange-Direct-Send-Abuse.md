@@ -233,6 +233,8 @@ Result:
 [!!!] TENANT IS VULNERABLE
 ```
 
+The full test script is available in my [tools and methodologies repository](https://github.com/sireton/tools-methodologies/blob/Practice/Tools/vuln%20testing/Exchange%20Direct%20Send%20Attack).
+
 ---
 
 ## Remediation and Hardening
@@ -331,3 +333,4 @@ The practical takeaway for defenders and purple teamers is narrower than most wr
 - [Microsoft -- Direct Send: Send Mail Directly From Your Device or Application](https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/how-to-set-up-a-multifunction-device-or-application-to-send-email-using-microsoft-365-or-office-365)
 - [risk3sixty -- Security Advisory: Microsoft 365 Direct Send Abuse in Active Phishing Campaigns](https://risk3sixty.com/blog/security-advisory-microsoft-365-direct-send-abuse-in-active-phishing-campaigns)
 - [Black Arrow Cyber Consulting -- Microsoft 365 Direct Send Abuse Enabling Internal-Appearing Phishing](https://www.blackarrowcyber.com/blog/alert-18-august-2025-direct-send-abuse)
+- [Sam Ireton -- Direct Send Test Script](https://github.com/sireton/tools-methodologies/blob/Practice/Tools/vuln%20testing/Exchange%20Direct%20Send%20Attack)
