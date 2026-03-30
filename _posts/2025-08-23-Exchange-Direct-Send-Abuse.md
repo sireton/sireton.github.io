@@ -147,16 +147,6 @@ BIMP_SHARED_SU_KEY=Chase
 | EHLO | `[127.0.0.1]` | Spoofed loopback -- Direct Send signature |
 | Delivery route | `[TENANT].mail.protection.outlook.com` | Bypassed MX gateway entirely |
 
-### DNS and Auth Posture
-
-Running the full posture check confirmed DMARC at `p=reject`, DKIM configured correctly, SPF at `~all`. Everything looked healthy on paper. `RejectDirectSend` returned blank. That was the gap.
-
-```powershell
-nslookup -type=TXT [CLIENT-DOMAIN]
-nslookup -type=TXT _dmarc.[CLIENT-DOMAIN]
-nslookup -type=TXT selector1._domainkey.[CLIENT-DOMAIN]
-Get-OrganizationConfig | Select RejectDirectSend
-```
 
 ---
 
