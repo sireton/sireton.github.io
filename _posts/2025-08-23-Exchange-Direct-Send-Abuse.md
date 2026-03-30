@@ -5,6 +5,7 @@ description: "Direct Send is a Microsoft 365 feature designed to let printers se
 categories:
   - Case Studies
   - Security Research
+  - Email Security
 
 tags:
   - Phishing
