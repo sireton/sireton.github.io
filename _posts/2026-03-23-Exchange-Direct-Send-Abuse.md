@@ -32,6 +32,7 @@ What makes this particularly dangerous is the level of trust and believability i
 This creates a scenario where attackers can send messages that appear to originate from internal users or trusted roles while passing basic trust checks. The effectiveness of the attack is not driven by sophisticated social engineering. The delivery path is the credibility.
 
 This post examines how DirectSend is abused, why mature email security postures still leave organizations exposed, and how default configurations create the gap. It includes authorized proof of concept testing and the remediation steps defenders can use to close it. The broader question it tries to answer is harder: when the vulnerability is the feature and no fix exists, how reading your own documentation from an attacker's perspective is the foundation of proactive security and finding the gaps your controls were never built to see.
+
 ---
 
 ## The Threat Landscape
