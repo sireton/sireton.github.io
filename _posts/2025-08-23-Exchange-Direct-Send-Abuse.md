@@ -46,6 +46,7 @@ This is not a new technique, but it has had a very active year. Starting in May 
 | US-based victims | ~95% |
 | Primary verticals | Financial Services, Healthcare, Manufacturing, Construction |
 | CVE assigned | None -- abuse of a legitimate feature |
+
 *Source: [Varonis Threat Labs -- Ongoing Campaign Abuses Microsoft 365's Direct Send to Deliver Phishing Emails](https://www.varonis.com/blog/direct-send-exploit)*
 
 ---
