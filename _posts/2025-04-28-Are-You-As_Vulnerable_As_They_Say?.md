@@ -3,6 +3,7 @@ title: "Are You as Vulnerable as They Say?"
 date: 2025-04-28
 categories: [Blog Posts]
 tags: [Security Awareness, Practical Security, Kill Chain, Defense, VPN, Antivirus, Phishing, User Education]
+pin: true
 description: "Attackers use simple, predictable kill chains to target you. Targeted advertising tries to scare you into thinking it's complicated. Here's what actually works."
 ---
 
