@@ -29,10 +29,9 @@ DirectSend abuse exposes a gap that exists not because of misconfiguration, but 
 
 What makes this particularly dangerous is the level of trust and believability it presents to an end user. Traditional spoofing techniques often introduce indicators users are trained to question, such as altered domains, external sender banners, or gateway warnings. DirectSend abuse removes many of those signals. Messages can arrive through trusted infrastructure without the routing indicators that typically expose a spoof.
 
-This creates a scenario where attackers can send messages that appear to originate from internal users or trusted roles while passing basic trust checks. In these cases, the effectiveness of the attack is not driven by sophisticated social engineering, but by the credibility provided by the delivery path itself.
+This creates a scenario where attackers can send messages that appear to originate from internal users or trusted roles while passing basic trust checks. The effectiveness of the attack is not driven by sophisticated social engineering. The delivery path is the credibility. 
 
-This post examines how DirectSend is abused, why organizations with otherwise mature email security postures remain vulnerable, and how integrity controls, availability trade offs, and default configurations intersect to create this gap. It also includes authorized proof of concept testing and the configuration changes defenders can use to mitigate the risk.
-
+This post examines how DirectSend is abused, why mature email security postures still leave organizations exposed, and how default configurations create the gap. It includes authorized proof of concept testing and the remediation steps defenders can use to close it.
 ---
 
 ## The Threat Landscape
