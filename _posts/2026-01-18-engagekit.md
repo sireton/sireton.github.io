@@ -156,5 +156,5 @@ The folder structure and markdown content are identical regardless of platform.
 
 ## Source
 
-Full source and documentation: [github.com/sireton/engagekit](https://github.com/sireton/EngageKit)
+Full source and documentation: [github.com/sireton/engagekit](https://github.com/sireton/tools-methodologies/tree/Practice/Tools/vuln%20testing/EngageKit)
 
