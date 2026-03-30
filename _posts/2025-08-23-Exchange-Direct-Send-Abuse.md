@@ -37,10 +37,7 @@ This post examines how DirectSend is abused, why mature email security postures 
 
 ## The Threat Landscape
 
-This is not a new technique, but it has had a very active year. Starting in May 2025, multiple threat research teams independently documented ongoing campaigns abusing Direct Send to deliver phishing that looks like it came from inside the target organization. Over 70 organizations confirmed affected, 95% US-based, hitting financial services, healthcare, manufacturing, and construction hardest. What makes it stick is the simplicity. No malware. No CVE. No foothold required.
-
-*Source: [Varonis Threat Labs -- Ongoing Campaign Abuses Microsoft 365's Direct Send to Deliver Phishing Emails](https://www.varonis.com/blog/direct-send-exploit)*
-
+This is not a new technique, but it has had a very active year. Starting in May 2025, multiple threat research teams independently documented ongoing campaigns abusing Direct Send to deliver phishing that looks like it came from inside the target organization. Over 70 organizations confirmed affected, 95% US-based, hitting financial services, healthcare, manufacturing, and construction hardest. What makes it stick is the simplicity. 
 
 | Metric | Value |
 |---|---|
@@ -49,11 +46,7 @@ This is not a new technique, but it has had a very active year. Starting in May 
 | US-based victims | ~95% |
 | Primary verticals | Financial Services, Healthcare, Manufacturing, Construction |
 | CVE assigned | None -- abuse of a legitimate feature |
-
-
-Microsoft released the fix, `RejectDirectSend`, in April 2025. The campaign started in May. That one-month window tells you everything about how quickly attackers read release notes.
-
-*Source: [Microsoft Exchange Team -- Introducing More Control Over Direct Send in Exchange Online](https://techcommunity.microsoft.com/blog/exchange/introducing-more-control-over-direct-send-in-exchange-online/4408790)*
+*Source: [Varonis Threat Labs -- Ongoing Campaign Abuses Microsoft 365's Direct Send to Deliver Phishing Emails](https://www.varonis.com/blog/direct-send-exploit)*
 
 ---
 
@@ -301,7 +294,7 @@ If you genuinely have no dependency on Direct Send, no printers, no old apps, no
 
 ### Enable RejectDirectSend
 
-This is the only control that actually closes the vector. 
+Microsoft released the fix, RejectDirectSend, in April 2025. The campaign started in May. That one-month window tells you everything about how quickly attackers read release notes. This is the only control that actually closes the vector. 
 
 ```powershell
 Set-OrganizationConfig -RejectDirectSend $true
