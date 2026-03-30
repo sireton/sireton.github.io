@@ -88,7 +88,7 @@ So you get a message that fails every auth check, arrives in the inbox, and gets
 
 ## The Incident: What the Headers Showed
 
-Back to the forwarded email. Once I had the full headers, the story was immediate.
+This vulnerability first came to my attention when a client forwarded me an emailthey recieved appearing as if it was from themselves forwarding a link to "Chase Bank". Once I had the full headers, the story was immediate.
 
 **Microsoft's own label for unauthenticated delivery:**
 
@@ -260,8 +260,6 @@ If you have any of these, the path is: audit your inbound connectors, identify w
 # See what you are working with
 Get-InboundConnector | Select Name, SenderIPAddresses, RequireTls
 ```
-
-If your connectors show `RequireTls: False`, add that to the hardening list too. It is not what this post is about, but it is overdue.
 
 ### Work Around: Scope Inbound Connectors to Static IPs
 
