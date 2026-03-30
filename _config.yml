@@ -14,8 +14,7 @@ timezone: America/Chicago
 # jekyll-seo-tag settings › https://github.com/jekyll/jekyll-seo-tag/blob/master/docs/usage.md
 # ↓ --------------------------
 
-title: HideYourBytes
-            from  Sam Ireton # the main title
+title: Sam Ireton # the main title
 
 tagline: Cybersecurity Specialist # it will display as the subtitle
 
