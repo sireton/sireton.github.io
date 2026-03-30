@@ -1,7 +1,10 @@
 ---
 title: "Living Off the Land: Why LOLBins Are a Defender's Nightmare"
 date: 2025-09-10
-categories: [Blog Posts]
+categories:
+  - Case Studies
+  - Security Research
+
 tags: [Threat Research, LOLBins, LOLBAS, Defense Evasion, Red Team, Blue Team]
 description: "A breakdown of living-off-the-land techniques — why they work, what they look like in the wild, and how defenders can approach detection when the attacker's weapon is your own OS."
 ---
