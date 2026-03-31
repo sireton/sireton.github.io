@@ -1,7 +1,10 @@
 ---
 title: "Living Off the Land: A Technical Case Study in LOLBin Abuse"
 date: 2025-09-10
-categories: [Case Studies]
+categories:
+  - Case Studies
+  - Security Research
+    
 tags: [threat-research, lolbins, lolbas, defense-evasion, red-team, blue-team]
 description: "A per-tool breakdown of how LOLBins work, how they're abused, how to test for exposure, and what defenders can actually do about it."
 ---
