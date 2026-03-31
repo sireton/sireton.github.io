@@ -16,7 +16,7 @@ This post is a technical case study covering three LOLBin primitives across Wind
 ---
 
 
-## Why Detection Is Hard (and Why That Is the Point)
+## Why Detection Is Hard
 
 The detection challenge is not identifying that `certutil.exe` ran. It is determining whether the specific invocation of `certutil.exe` was legitimate or malicious. This requires behavioral context that signature-based detection does not provide.
 
