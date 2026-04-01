@@ -4,7 +4,7 @@ date: 2025-04-28
 categories: [Blog Posts]
 tags: [Security Awareness, Practical Security, Kill Chain, Defense, VPN, Antivirus, Phishing, User Education]
 pin: true
-description: "Attackers use simple, predictable kill chains to target you. Targeted advertising tries to scare you into thinking it's complicated. Here's what actually works."
+description: "Attackers use simple, predictable kill chains to target you. Targeted advertising tries to scare you into thinking it's complicated. Here's what actually protects your data."
 ---
 
 Someone close to you has asked some version of this: *Do I need a VPN? Is my antivirus good enough? I got a text saying my account was compromised, what do I do?*
