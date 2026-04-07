@@ -17,7 +17,7 @@ I'm an IT security professional with over eight years of hands-on experience sup
 Alongside my professional work, I actively pursue continuous learning through hands-on experimentation and technical research. This has led me to develop practical skills in secure network design, penetration testing, and adversarial thinking. This blog serves as a space to document technical write-ups and case studies that reflect how I approach security work in practice. The content emphasizes methodical analysis, clear communication of risk, and the connection between technical findings and real-world impact, rather than tool-driven walkthroughs or theoretical discussion.
 
 
-## About this site ℹ️
+## This site ℹ️
 
 
 #### Blog Posts
