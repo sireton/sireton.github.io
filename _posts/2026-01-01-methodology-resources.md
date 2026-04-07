@@ -53,7 +53,6 @@ description: "Essential wordlist paths, online resources, and hashcat mode quick
 | CyberChef | https://gchq.github.io/CyberChef | Encoding/decoding |
 | ExploitDB | https://www.exploit-db.com | CVE research |
 | IppSec Search | https://ippsec.rocks | HTB technique lookup |
-| 0xdf Blog | https://0xdf.gitlab.io | HTB writeups |
 | PortSwigger Academy | https://portswigger.net/web-security | Web attacks |
 
 ---
