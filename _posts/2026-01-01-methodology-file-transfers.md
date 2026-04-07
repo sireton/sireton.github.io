@@ -1,11 +1,9 @@
-
 ---
 title: "Reference — File Transfer Methods"
 date: 2025-12-02
-categories:
-  - Tools & Methodologies
-  - Reference
-tags: [Methodology, File Transfer, Python HTTP Server, Netcat, PowerShell, certutil, SMB, Exfiltration]
+categories: [Tools & Methodologies, Reference]
+tags: [methodology, File Transfer, Python HTTP Server, Netcat, PowerShell, certutil, SMB, Exfiltration]
+---
 description: "File transfer reference — Linux and Windows download/upload methods, netcat transfers, SMB server, base64 encode/decode, and exfiltration techniques."
 ---
 
@@ -14,7 +12,6 @@ description: "File transfer reference — Linux and Windows download/upload meth
 
 ---
 
-#meta #filetransfer #windows #linux
 
 ## Linux → Target
 
