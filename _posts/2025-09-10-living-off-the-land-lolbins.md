@@ -7,6 +7,7 @@ categories:
     
 tags: [threat-research, lolbins, lolbas, defense-evasion, red-team, blue-team]
 description: "A per-tool breakdown of how LOLBins work, how they're abused, how to test for exposure, and what defenders can actually do about it."
+pin: true
 ---
 
 Detection engineering can often feel like hunting for a needle-in-a-haystack. At scale, that haystack is millions of events per day, most legitimate, all requiring triage. Every alert is a question that needs an answer, and most answers are the same: nothing to see here. LOLBin abuse makes it a needle-in-a-stack-of-needles problem. The malicious invocation looks nearly identical to the legitimate one. The binary is signed. The process is expected. And the event that should have been the signal gets buried under ten thousand that weren't.
