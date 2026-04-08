@@ -1,6 +1,6 @@
 ---
 title: "Methodology — Index & Overview"
-date: 2025-12-12
+date: 2025-01-01
 categories:
   - Tools & Methodologies
   - Methodology
