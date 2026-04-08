@@ -1,6 +1,6 @@
 ---
 title: "04 — Lateral Movement"
-date: 2025-01-01
+
 categories:
   - Tools & Methodologies
   - Methodology
