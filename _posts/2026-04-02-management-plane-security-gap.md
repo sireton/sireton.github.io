@@ -3,7 +3,7 @@ title: "Your Biggest Security Gap Is What You Trust Most"
 date: 2026-04-02
 categories: [Blog Posts]
 tags: [Threat Research, Red Team, VMware, Management Plane, Exploitation, Opinion, Infrastructure]
-description: "CVE-2026-22719 in VMware Aria is the latest in a pattern that's been building for years: the tools you use to manage infrastructure are becoming the primary attack surface."
+description: "CVE-2026-22719 fits a pattern that's been building for years. Your management plane is the attack surface now."
 ---
 
 There is a recurring pattern in modern vulnerability disclosures. A new CVE surfaces, CISA issues an advisory, and another platform is labeled actively exploited. These cases are usually discussed on their own, but together they reveal a broader shift in attacker focus.
