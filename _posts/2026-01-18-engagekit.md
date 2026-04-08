@@ -6,6 +6,7 @@ categories:
   - Tools
 tags: [Tools, Automation, Python, Pentest, Reporting, Notes, Engagement]
 description: "engagekit is a cross-platform Python script that builds a structured pentest engagement workspace in seconds — pre-populated markdown templates, organised scan folders, a loot tracker, and a timestamped evidence capture helper, all named and dated for the engagement automatically."
+pin: true
 ---
 
 Every pentest starts the same way: you have a target, a scope document, and a blank terminal. Before you run a single tool you need somewhere to put the output, a notes structure you can actually navigate under time pressure, and a way to capture evidence without breaking your flow. Setting that up manually before every engagement is friction that adds up.
