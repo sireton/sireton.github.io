@@ -1,6 +1,6 @@
 ---
 title: "Your Biggest Security Gap Is What You Trust Most"
-date: 2026-03-15
+date: 2026-04-02
 categories: [Blog Posts]
 tags: [Threat Research, Red Team, VMware, Management Plane, Exploitation, Opinion, Infrastructure]
 description: "CVE-2026-22719 in VMware Aria is the latest in a pattern that's been building for years: the tools you use to manage infrastructure are becoming the primary attack surface."
