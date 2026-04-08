@@ -7,7 +7,7 @@ order: 4
 ###  whoami 🔍
 I'm an IT security professional with over eight years of hands-on experience supporting and securing enterprise environments. My background includes building and maintaining resilient network architectures, conducting security audits, and supporting production systems with a strong focus on risk reduction and operational stability.
 
-#### Technical Focus
+##### Technical Focus
 
 - Network and infrastructure security
 - Penetration testing and attack surface analysis
