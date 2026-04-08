@@ -44,23 +44,27 @@ Production systems are increasingly hardened. EDR coverage is more widespread. S
 
 Management systems often operate under a different set of assumptions.
 
-They may follow slower patch cycles because of perceived operational sensitivity. They are often accessed by a smaller number of privileged administrators, which narrows the behavioral baseline. They also maintain legitimate communication paths across broad portions of the environment, which makes suspicious activity harder to distinguish from expected administration. NIST’s enterprise patch management guidance explicitly frames patching as a cost of doing business and a necessary preventive maintenance function, reinforcing the point that delayed patching is usually a prioritization problem, not just a technical one ([NIST SP 800-40 Rev. 4](https://csrc.nist.gov/pubs/sp/800/40/r4/final)).
+They may follow slower patch cycles because of perceived operational sensitivity. They are often accessed by a smaller number of privileged administrators, which narrows the behavioral baseline. They also maintain legitimate communication paths across broad portions of the environment, which makes suspicious activity harder to distinguish from expected administration. NIST’s enterprise patch management guidance explicitly frames patching as a cost of doing business and a necessary preventive maintenance function, showing that delayed patching is usually a prioritization problem, not just a technical one ([NIST SP 800-40 Rev. 4](https://csrc.nist.gov/pubs/sp/800/40/r4/final)).
 
 An attacker with code execution on a management platform is not just inside the network. They are operating from a position of trust, with built-in visibility and administrative reach.
+
 
 ## The Defense Posture Gap
 
 The issue is not simply exposure. It is prioritization.
 
-Many organizations still sort risk into two rough categories: internet-facing systems and everything else. That model no longer holds when management interfaces are reachable, administrative APIs are exposed, and control systems aggregate privileged access across large portions of the environment.
+For a number valid time, fiscal, and resource restrictions, many organizations still sort risk into two rough categories: internet-facing systems and everything else. That model assumes internal systems are harder to reach, less likely to be targeted directly, and therefore safer to patch, monitor, and review on a slower cycle. That assumption breaks down when management interfaces are reachable, administrative APIs are exposed, and control systems aggregate privileged access across large portions of the environment.
 
-In practice, this creates a consistent gap. Edge-facing systems often receive immediate attention when a critical vulnerability is disclosed. Internal management platforms are more likely to wait for a maintenance window, even when the downstream impact of compromise may be greater. The repeated appearance of management and remote access technologies in CISA’s Known Exploited Vulnerabilities catalog is one indication that this older prioritization model is no longer sufficient ([CISA KEV Catalog](https://www.cisa.gov/known-exploited-vulnerabilities-catalog)).
+That is why recent exploitation of platforms such as Ivanti Connect Secure, PAN-OS with GlobalProtect exposure, and Fortinet infrastructure is so significant. These are not ordinary business applications. They are systems used to administer access, enforce policy, and control enterprise operations. When vulnerabilities in those platforms are actively exploited, it demonstrates that attackers are deliberately targeting the systems organizations often treat as lower-priority internal infrastructure ([CISA ED 24-01](https://www.cisa.gov/news-events/directives/ed-24-01-mitigate-ivanti-connect-secure-and-ivanti-policy-secure-vulnerabilities); [CISA AA24-060B](https://www.cisa.gov/news-events/cybersecurity-advisories/aa24-060b); [Palo Alto CVE-2024-3400](https://security.paloaltonetworks.com/CVE-2024-3400); [Fortinet FG-IR-24-535](https://www.fortiguard.com/psirt/FG-IR-24-535)).
 
-Monitoring often follows the same logic. Production systems tend to receive fuller telemetry, more mature alert tuning, and more frequent review. Management platforms may operate with thinner visibility or detection logic that is not designed to catch low-noise abuse of trusted tools and administrative interfaces.
+The operational result is a consistent defensive gap. Edge-facing systems often receive immediate attention when a critical vulnerability is disclosed because their exposure is obvious. Internal management platforms are more likely to wait for a maintenance window, even though the impact of compromise may be broader. The issue is not that defenders ignore these platforms entirely. It is that urgency is often assigned based on visibility of exposure rather than concentration of control.
 
-Part of that gap is also economic. Once a system is viewed as lower risk, budget, staffing, and operational attention often follow the same assumption. NIST’s patch management guidance does not reduce this to money alone, but it does make clear that patching requires enterprise planning, governance, and sustained operational commitment. In other words, the problem is not only that management systems are underestimated. It is also that scarce resources are often allocated elsewhere first ([NIST SP 800-40 Rev. 4](https://csrc.nist.gov/pubs/sp/800/40/r4/final)).
+Monitoring often follows the same logic. Production systems tend to receive fuller telemetry, more mature alert tuning, and more frequent review because they are seen as the most likely targets or the most operationally sensitive assets. Management platforms, by contrast, may operate with thinner visibility or detection logic that is not designed to catch low-noise abuse of trusted tools and administrative interfaces. That creates a condition where some of the most privileged systems in the environment are also some of the least scrutinized.
+
+Part of that gap is also economic. Once a system is viewed as lower risk, budget, staffing, and operational attention often follow the same assumption. NIST’s patch management guidance makes clear that patching requires enterprise planning, governance, and sustained operational commitment ([NIST SP 800-40 Rev. 4](https://csrc.nist.gov/pubs/sp/800/40/r4/final)). In other words, when management systems are deprioritized in the risk model, they are often deprioritized in resourcing as well.
 
 This is not just a tooling problem. It is a governance and prioritization problem.
+
 
 ## What This Means Practically
 
@@ -74,26 +78,18 @@ Treat management infrastructure with the same patch urgency as internet-facing s
 
 ## References
 
-- **CISA KEV**: CISA Known Exploited Vulnerabilities search showing VMware-related entries  
-  https://www.cisa.gov/known-exploited-vulnerabilities-catalog?field_date_added_wrapper=all&items_per_page=20&search_api_fulltext=vmware&sort_by=field_date_added
+- **CISA KEV**: [CISA Known Exploited Vulnerabilities search showing VMware-related entries](https://www.cisa.gov/known-exploited-vulnerabilities-catalog?field_date_added_wrapper=all&items_per_page=20&search_api_fulltext=vmware&sort_by=field_date_added)
 
-- **Broadcom advisory**: VMware Aria Operations security advisory for CVE-2026-22719  
-  https://support.broadcom.com/web/ecx/support-content-notification/-/external/content/SecurityAdvisories/0/36947
+- **Broadcom advisory**: [VMware Aria Operations security advisory for CVE-2026-22719](https://support.broadcom.com/web/ecx/support-content-notification/-/external/content/SecurityAdvisories/0/36947)
 
-- **CISA ED 24-01**: Emergency Directive 24-01 for Ivanti Connect Secure and Policy Secure  
-  https://www.cisa.gov/news-events/directives/ed-24-01-mitigate-ivanti-connect-secure-and-ivanti-policy-secure-vulnerabilities
+- **CISA ED 24-01**: [Emergency Directive 24-01 for Ivanti Connect Secure and Policy Secure](https://www.cisa.gov/news-events/directives/ed-24-01-mitigate-ivanti-connect-secure-and-ivanti-policy-secure-vulnerabilities)
 
-- **CISA AA24-060B**: Cybersecurity Advisory on Ivanti exploitation  
-  https://www.cisa.gov/news-events/cybersecurity-advisories/aa24-060b
+- **CISA AA24-060B**: [Cybersecurity Advisory on Ivanti exploitation](https://www.cisa.gov/news-events/cybersecurity-advisories/aa24-060b)
 
-- **Palo Alto CVE-2024-3400**: Palo Alto Networks advisory  
-  https://security.paloaltonetworks.com/CVE-2024-3400
+- **Palo Alto CVE-2024-3400**: [Palo Alto Networks advisory](https://security.paloaltonetworks.com/CVE-2024-3400)
 
-- **Fortinet FG-IR-24-535**: Fortinet PSIRT advisory  
-  https://www.fortiguard.com/psirt/FG-IR-24-535
+- **Fortinet FG-IR-24-535**: [Fortinet PSIRT advisory](https://www.fortiguard.com/psirt/FG-IR-24-535)
 
-- **NIST SP 800-40 Rev. 4**: Guide to Enterprise Patch Management Planning  
-  https://csrc.nist.gov/pubs/sp/800/40/r4/final
+- **NIST SP 800-40 Rev. 4**: [Guide to Enterprise Patch Management Planning](https://csrc.nist.gov/pubs/sp/800/40/r4/final)
 
-- **CISA KEV Catalog**: CISA Known Exploited Vulnerabilities Catalog  
-  https://www.cisa.gov/known-exploited-vulnerabilities-catalog
+- **CISA KEV Catalog**: [CISA Known Exploited Vulnerabilities Catalog](https://www.cisa.gov/known-exploited-vulnerabilities-catalog)
