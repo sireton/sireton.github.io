@@ -1,6 +1,6 @@
 ---
 title: "engagekit — Pentest Engagement Workspace Scaffolder"
-date: 2026-01-18
+date: 2025-08-18
 categories:
   - Tools & Methodologies
   - Tools
