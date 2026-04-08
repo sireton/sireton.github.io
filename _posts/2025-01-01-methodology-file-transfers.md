@@ -1,6 +1,6 @@
 ---
 title: "Reference — File Transfer Methods"
-date: 2025-12-02
+date: 2025-01-01
 categories: [Tools & Methodologies, Reference]
 tags: [methodology, File Transfer, Python HTTP Server, Netcat, PowerShell, certutil, SMB, Exfiltration]
 ---
