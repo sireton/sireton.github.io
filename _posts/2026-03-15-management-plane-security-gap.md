@@ -1,5 +1,5 @@
 ---
-title: "Attackers Are Living in Your Management Plane"
+title: "Your Biggest Security Gap Is What You Trust Most"
 date: 2026-03-15
 categories: [Blog Posts]
 tags: [Threat Research, Red Team, VMware, Management Plane, Exploitation, Opinion, Infrastructure]
