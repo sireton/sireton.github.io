@@ -1,6 +1,5 @@
 ---
 title: "01 — Recon & Enumeration"
-date: 2025-01-09
 categories:
   - Tools & Methodologies
   - Methodology
