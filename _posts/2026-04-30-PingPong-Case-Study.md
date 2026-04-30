@@ -8,7 +8,7 @@ tags: [active-directory, adcs, kerberos, multi-forest, privilege-escalation, thr
 description: "A spoiler-safe engagement-format analysis of HTB PingPong from Season 10: how bidirectional forest trust, PKI misconfigurations, and service account design failures chain into full domain compromise."
 ---
 
-!(/assets/img/PingPong/pingpong complete.png)
+![](/assets/img/PingPong/pingpong%20complete.png)
 
 *A spoiler-safe engagement-format analysis of Hack The Box PingPong (Season 10, Insane, Windows, Active) [[1]](https://app.hackthebox.com/machines/PingPong). Flags, credentials, exact commands, endpoint paths, payloads, usernames, and machine-specific identifiers are intentionally omitted. The techniques, control failures, and threat parallels discussed are real. The sequence is the lesson.*
 
