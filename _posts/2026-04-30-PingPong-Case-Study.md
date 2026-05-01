@@ -95,7 +95,7 @@ Mandiant documented an analogous failure when analyzing APT29's (Cozy Bear) oper
  
 > **Note Worthy:** File access telemetry is the detection opportunity here. A service account reading a user's PSReadLine history file has no legitimate operational purpose. Sysmon Event ID 11 [[9]](https://learn.microsoft.com/en-us/sysinternals/downloads/sysmon) captures file creation, and file access events from unexpected security contexts against known history file paths are detectable if the Sysmon configuration targets them. Most don't.
 {: .prompt-tip }
- 
+
 ---
  
 ## Phase 5: Delegation Abuse Through the Database Layer
@@ -167,7 +167,8 @@ I modified a template to permit a Subject Alternative Name specifying the domain
  
 The engagement started with a misconfigured certificate template and ended with a misconfigured certificate template. PKI was the opening move and the closing move. This engagement used two ADCS techniques specifically: ESC13 for initial access and ESC4 for the final forest-level escalation. That symmetry isn't accidental. It reflects the reality that ADCS is the most underaudited high-privilege component in most Active Directory environments. The broader research community has now catalogued 16 distinct ADCS privilege escalation techniques (ESC1 through ESC16), and recent research from BeyondTrust presented at SO-CON 2025 demonstrated that these on-premises misconfigurations can lead to full compromise of cloud-based infrastructure in hybrid deployments. [[14]](https://www.catonetworks.com/blog/cato-ctrl-preventing-privilege-escalation-via-active-directory-certificate-services-adcs/)
  
-> **Note Worthy:** Event ID 4899 [[13]](https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/plan/security-best-practices/audit-policy-recommendations) is generated on the CA when a certificate template is modified. A template modification followed within minutes by a certificate request from a new principal type is a near-certain indicator of ESC4 in progress. The telemetry exists. The alert does not. {: .prompt-tip }
+> **Note Worthy:** Event ID 4899 [[13]](https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/plan/security-best-practices/audit-policy-recommendations) is generated on the CA when a certificate template is modified. A template modification followed within minutes by a certificate request from a new principal type is a near-certain indicator of ESC4 in progress. The telemetry exists. The alert does not.
+{: .prompt-tip }
  
 ---
  
