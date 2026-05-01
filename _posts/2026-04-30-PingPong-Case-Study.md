@@ -5,6 +5,7 @@ categories:
   - Case Studies
   - Labs
 tags: [active-directory, adcs, kerberos, multi-forest, privilege-escalation, threat-research, red-team, blue-team]
+pin: true
 description: "This case study traces how PKI trust, cross-forest ACL inheritance, gMSA credential scope, JEA artifact hygiene, and service account privilege design each failed independently before failing together."
 ---
  
