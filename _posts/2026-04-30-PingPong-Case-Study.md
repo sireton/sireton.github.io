@@ -1,5 +1,5 @@
 ---
-title: "PingPong: A Case Study in Multi-Forest Trust Collapse and ADCS Exploitation"
+title: "PingPong - A Case Study in Multi-Forest Trust Collapse and ADCS Exploitation"
 date: 2026-04-30
 categories:
   - Case Studies
