@@ -9,24 +9,24 @@ description: "Two forests. Two ADCS exploitation stages. One chain that begins a
 ---
  
 ![](/assets/img/PingPong/pingpong%20complete.png)
- 
-*A spoiler-safe engagement-format analysis of Hack The Box PingPong (Season 10, Insane, Windows, Active) [[1]](https://app.hackthebox.com/machines/PingPong). Flags, credentials, exact commands, endpoint paths, payloads, usernames, and machine-specific identifiers are intentionally omitted. The techniques, control failures, and threat parallels discussed are real. The sequence is the lesson.*
- 
----
- 
+
 **Source:** [Hack The Box: PingPong](https://app.hackthebox.com/machines/PingPong)
- 
+
+---
+  
 PingPong is a Season 10 Windows machine rated Insane, built around a bidirectional Active Directory forest trust and a PKI infrastructure that fails at both ends of the engagement chain. Starting from an assumed-breach credential set, the path chains ADCS template abuse, cross-forest ACL exploitation, gMSA credential theft, JEA artifact disclosure, Kerberos delegation abuse, token impersonation, DCSync, and a second ADCS stage to reach domain administrator across both forests. A full engagement report will be published after the machine retires.
+
+*This is a spoiler-safe engagement analysis of Hack The Box's PingPong (Season 10, Insane, Windows, Active). Flags, credentials, exact commands, endpoint paths, payloads, usernames, and machine-specific identifiers are intentionally omitted. The techniques, control failures, and threat parallels discussed are real. The progressive analysis and research is the lesson.*
  
 ---
  
-## Framing the Engagement
+## The Engagement 
  
 PingPong doesn't hand you a path. From the first moment I had connectivity, it was clear this was going to require building a mental model of the environment before anything useful could happen. Two forest environments. A bidirectional trust relationship. Separate domain controllers, separate PKI infrastructure, and a service account design that crossed the forest boundary in ways that turned out to matter enormously.
  
 I treated this the same way I'd treat a real engagement: enumerate deliberately, form hypotheses, test assumptions in order of confidence. My goal wasn't to find the first thing that looked broken. It was to understand what the environment was supposed to do, so that when something deviated from that model, I'd recognize why it mattered rather than just stumbling into it.
- 
-What follows is a phase-by-phase account of how that model built itself and where it broke down. The central argument, which the engagement ultimately supports, is that the controls here weren't absent. They were present, individually reasonable, and collectively insufficient. PKI trust, cross-forest ACL design, service account privilege scope, and administrative interface artifact hygiene each failed in ways that only become visible when the full trust surface is evaluated as a system rather than a collection of independent components. The final section returns to that argument with the specific lessons the path produced.
+
+ The following is a phase-by-phase account of how I mapped the model to real world configurations and where it broke down. The controls here weren't absent. They were present and individually reasonable but collectively insufficient. PKI trust, cross-forest ACL design, service account privilege scope, and administrative interface artifact hygiene each failed in ways that only become visible when the full trust surface is evaluated as a trust system rather than a collection of independent components. The final section returns to that argument with the specific lessons the path produced.
  
 ---
  
@@ -42,7 +42,7 @@ I requested the certificate, used it to authenticate, and had a working WinRM se
  
 This isn't a theoretical risk. In April 2022, Mandiant reported that APT29 (Cozy Bear) exploited misconfigured certificate templates to impersonate admin users, requesting certificates as low-privileged users and specifying high-privileged accounts in the Subject Alternative Name (SAN) field, allowing them to authenticate as those accounts. [[4]](https://www.semperis.com/blog/esc1-attack-explained/) In April 2024, Google Cloud reported that UNC5330 used an LDAP bind account to exploit a vulnerable Windows certificate template, creating a computer object and impersonating a domain administrator. [[5]](https://cloud.google.com/blog/topics/threat-intelligence/ivanti-post-exploitation-lateral-movement) The technique is in active use by nation-state actors. PingPong models it accurately.
  
-> **Note Worthy:** CA request logs are where a defender would have seen this. A certificate request from a non-standard principal type, or one with a SAN value inconsistent with the requestor's identity, is anomalous. The event data exists. In most organizations it sits in compliance storage and nothing alerts on it.
+> **Note Worthy:** CA request logs are where a defender would have seen this. A certificate request from a non-standard principal type, or one with a SAN value inconsistent with the requestor's identity, is anomalous. The event data exists. In most organizations it sits in compliance storage and nothing alerts on it. {: .prompt-tip }
  
 ---
  
@@ -50,7 +50,7 @@ This isn't a theoretical risk. In April 2022, Mandiant reported that APT29 (Cozy
  
 **Attack Classification:** [Domain Trust Discovery (T1482)](https://attack.mitre.org/techniques/T1482/)
  
-Once I was on the primary DC, my first instinct wasn't to dig deeper into that forest. It was to look outward. The bidirectional trust was the most interesting structural fact about this environment, and I wanted to understand it before committing to any specific path forward.
+Once I was on the primary DC, I didn't want to spend too much time digging deeper into that forest as I was still building the mental map of the trust relationship so I needed to look outward. The bidirectional trust was the most interesting structural fact about this environment, and I wanted to understand it before committing to any specific path forward.
  
 I ran trust enumeration against both forests, built out the topology, and started asking the question that matters in any multi-forest environment: where does trust flow, and where is it not enforced? A bidirectional trust means authentication can move in both directions. Whether an attacker can use that is a function of the access controls on each side. Those controls are often designed with the individual forests in mind. They're rarely designed with the cross-forest composition in mind.
  
@@ -71,9 +71,9 @@ What I found was that the reader group controlling access to this gMSA's managed
 - This is a cross-forest ACL misconfiguration: the group lives in the trusted forest, but control over its membership extends into the primary forest, and nobody had modeled what that implied.
 I added the appropriate principal to the reader group from the primary forest side, then queried the gMSA's `msDS-ManagedPassword` attribute from the trusted forest and obtained the managed password material. The gMSA's credential was mine.
  
-The failure is subtle and worth sitting with for a moment. The gMSA password protection worked exactly as designed. The group membership controlled access exactly as designed. The misconfiguration was entirely in the ACL that governed who could modify that group from across the trust boundary. Reviewed in isolation within the trusted forest, every control looks correct. The break only appears when the cross-forest ACL surface is modeled holistically. Enterprise AD security reviews are almost never scoped that way.
+The failure is subtle and worth reviewing for a moment. The gMSA password protection worked exactly as designed. The group membership controlled access exactly as designed. The misconfiguration was entirely in the ACL that governed who could modify that group from across the trust boundary. Reviewed in isolation within the trusted forest, every control looks correct. The break only appears when the cross-forest ACL surface is modeled holistically. Enterprise AD security reviews are almost never scoped that way.
  
-> **Note Worthy:** Any read of `msDS-ManagedPassword` by a principal outside the designated reader group should be an immediate alert. Changes to the membership of groups that control gMSA access should be monitored as write-to-sensitive-group events. Cross-forest group membership changes specifically represent trust boundary modifications that most defenders have never baselined.
+> **Note Worthy:** Any read of `msDS-ManagedPassword` by a principal outside the designated reader group should be an immediate alert. Changes to the membership of groups that control gMSA access should be monitored as write-to-sensitive-group events. Cross-forest group membership changes specifically represent trust boundary modifications that most defenders have never baselined. {: .prompt-tip }
  
 ---
  
@@ -91,7 +91,7 @@ I want to be precise about why this matters defensively. JEA worked. The executi
  
 Mandiant documented an analogous failure when analyzing APT29's (Cozy Bear) operations against a European diplomatic entity, where the attack stood out for the abuse of Windows Credential Roaming, a feature used to persist certificates and credential material with the user across a domain. [[6]](https://cloud.google.com/blog/topics/threat-intelligence/apt29-windows-credential-roaming/) The specific mechanism differs from what I found here, but the category is identical: credential artifacts persisted in a location that the interface restriction didn't cover, and those artifacts were accessible to any principal who could reach the path.
  
-> **Note Worthy:** File access telemetry is the detection opportunity here. A service account reading a user's PSReadLine history file has no legitimate operational purpose. Sysmon Event ID 11 [[9]](https://learn.microsoft.com/en-us/sysinternals/downloads/sysmon) captures file creation, and file access events from unexpected security contexts against known history file paths are detectable if the Sysmon configuration targets them. Most don't.
+> **Note Worthy:** File access telemetry is the detection opportunity here. A service account reading a user's PSReadLine history file has no legitimate operational purpose. Sysmon Event ID 11 [[9]](https://learn.microsoft.com/en-us/sysinternals/downloads/sysmon) captures file creation, and file access events from unexpected security contexts against known history file paths are detectable if the Sysmon configuration targets them. Most don't. {: .prompt-tip }
  
 ---
  
@@ -127,11 +127,12 @@ The concept is straightforward: coerce a SYSTEM-level service to authenticate to
 - **JuicyPotato**: broadened COM server targeting for wider Windows version coverage
 - **SweetPotato**: adapted for environments where earlier variants were patched
 - **GodPotato**: targets the DCOM activation service, effective across modern Windows Server versions [[11]](https://www.ionsec.io/resources/reverse-engineering-godpotato-msascui-exe)
+
 The underlying privilege is the same across all of them. `SeImpersonatePrivilege` is often granted to web and database services by default. That's the critical observation: this isn't a misconfiguration someone made. It's a Windows default. A service account running SQL Server holds this privilege because Microsoft's design expects it to. An attacker who reaches code execution in that service context gets the primitive for free.
  
 I ran the escalation and had a SYSTEM shell on the trusted forest's domain controller within minutes of having database access. The escalation was a consequence of the privilege design, not a separate vulnerability.
  
-> **Note Worthy:** Process creation telemetry is the detection opportunity here. Sysmon Event ID 1 [[9]](https://learn.microsoft.com/en-us/sysinternals/downloads/sysmon), filtered for child processes spawned by database service accounts with elevated integrity levels, is the signal. A privileged subprocess with a database service parent has no legitimate explanation.
+> **Note Worthy:** Process creation telemetry is the detection opportunity here. Sysmon Event ID 1 [[9]](https://learn.microsoft.com/en-us/sysinternals/downloads/sysmon), filtered for child processes spawned by database service accounts with elevated integrity levels, is the signal. A privileged subprocess with a database service parent has no legitimate explanation. {: .prompt-tip }
  
 ---
  
@@ -147,7 +148,7 @@ This is the moment where the path snapped into focus. The entire lateral movemen
  
 APT29 (Cozy Bear) maintains a documented toolset that includes BloodHound, Mimikatz, Rubeus, and SharpView, tools that collectively enable credential extraction and domain replication abuse at scale. [[12]](https://cyble.com/threat-actor-profiles/apt-29/) DCSync is a standard component of that arsenal, not because it's novel but because it works consistently in environments where the detection doesn't exist.
  
-> **Note Worthy:** Windows generates Event ID 4662 [[13]](https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/plan/security-best-practices/audit-policy-recommendations) for directory replication requests. A DrsGetNCChanges request from a non-DC source is definitionally anomalous. The detection rule is trivial to write. In most environments, nobody has written it.
+> **Note Worthy:** Windows generates Event ID 4662 [[13]](https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/plan/security-best-practices/audit-policy-recommendations) for directory replication requests. A DrsGetNCChanges request from a non-DC source is definitionally anomalous. The detection rule is trivial to write. In most environments, nobody has written it. {: .prompt-tip }
  
 ---
  
@@ -159,9 +160,9 @@ CA Managers access in the primary forest meant I could modify certificate templa
  
 I modified a template to permit a Subject Alternative Name specifying the domain administrator's UPN. I requested a certificate. The CA issued it. I used PKINIT to obtain a Kerberos TGT for the domain administrator account and authenticated to the primary DC via WinRM.
  
-The engagement started with a misconfigured certificate template and ended with a misconfigured certificate template. PKI was the opening move and the closing move. That symmetry isn't accidental. It reflects the reality that ADCS is the most underaudited high-privilege component in most Active Directory environments. The ADCS attack surface now spans 16 distinct privilege escalation techniques (ESC1 through ESC16), and recent research from BeyondTrust presented at SO-CON 2025 demonstrated that these on-premises misconfigurations can lead to full compromise of cloud-based infrastructure in hybrid deployments. [[14]](https://www.catonetworks.com/blog/cato-ctrl-preventing-privilege-escalation-via-active-directory-certificate-services-adcs/)
+The engagement started with a misconfigured certificate template and ended with a misconfigured certificate template. PKI was the opening move and the closing move. This engagement used two ADCS techniques specifically: ESC13 for initial access and ESC4 for the final forest-level escalation. That symmetry isn't accidental. It reflects the reality that ADCS is the most underaudited high-privilege component in most Active Directory environments. The broader research community has now catalogued 16 distinct ADCS privilege escalation techniques (ESC1 through ESC16), and recent research from BeyondTrust presented at SO-CON 2025 demonstrated that these on-premises misconfigurations can lead to full compromise of cloud-based infrastructure in hybrid deployments. [[14]](https://www.catonetworks.com/blog/cato-ctrl-preventing-privilege-escalation-via-active-directory-certificate-services-adcs/)
  
-> **Note Worthy:** Event ID 4899 [[13]](https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/plan/security-best-practices/audit-policy-recommendations) is generated on the CA when a certificate template is modified. A template modification followed within minutes by a certificate request from a new principal type is a near-certain indicator of ESC4 in progress. The telemetry exists. The alert does not.
+> **Note Worthy:** Event ID 4899 [[13]](https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/plan/security-best-practices/audit-policy-recommendations) is generated on the CA when a certificate template is modified. A template modification followed within minutes by a certificate request from a new principal type is a near-certain indicator of ESC4 in progress. The telemetry exists. The alert does not. {: .prompt-tip }
  
 ---
  
@@ -171,7 +172,7 @@ Eight phases, two forests, two PKI exploitation stages at opposite ends of the c
  
 When I look back at the path, what stands out isn't any single technique. It's how many of the controls that failed were correctly designed for the scope they were built to address. The gMSA password was protected. The JEA endpoint restricted execution. The certificate template had an intended purpose. The database service delegation was constrained rather than unconstrained. Each of those represents a real security improvement over a worse baseline. None of them held up when evaluated across the full trust surface.
  
-That's the lesson that transfers directly to real security work. The controls are often present. The gap is in the composition. Nobody threat-modeled what happens when a cross-forest ACL gap meets a gMSA reader group meets a JEA artifact meets a delegation misconfiguration meets an ADCS template with write access. Each link in that chain looked acceptable in isolation. The chain was the vulnerability.
+This is a lesson that transfers directly to real security work. The controls are often present. The gap is in the composition. Nobody threat-modeled what happens when a cross-forest ACL gap meets a gMSA reader group meets a JEA artifact meets a delegation misconfiguration meets an ADCS template with write access. Each link in that chain looked acceptable in isolation. The chain was the vulnerability.
  
 APT29 (Cozy Bear) has demonstrated exactly this methodology in documented real-world campaigns: certificate template abuse for initial access [[4]](https://www.semperis.com/blog/esc1-attack-explained/), credential artifact exploitation for lateral movement [[6]](https://cloud.google.com/blog/topics/threat-intelligence/apt29-windows-credential-roaming/), and domain replication for credential extraction [[12]](https://cyble.com/threat-actor-profiles/apt-29/). The techniques aren't unique to a Hack The Box machine. They're the operational playbook of a well-resourced threat actor operating against enterprise Windows environments today.
  
