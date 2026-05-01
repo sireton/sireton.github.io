@@ -5,7 +5,7 @@ categories:
   - Case Studies
   - Labs
 tags: [active-directory, adcs, kerberos, multi-forest, privilege-escalation, threat-research, red-team, blue-team]
-description: "Two forests. Two ADCS exploitation stages. One chain that begins and ends at the certificate authority. This engagement traces how PKI trust, cross-forest ACL inheritance, gMSA credential scope, JEA artifact hygiene, and service account privilege design each failed independently before failing together."
+description: "This case study traces how PKI trust, cross-forest ACL inheritance, gMSA credential scope, JEA artifact hygiene, and service account privilege design each failed independently before failing together."
 ---
  
 ![](/assets/img/PingPong/pingpong%20complete.png)
@@ -75,7 +75,7 @@ I added the appropriate principal to the reader group from the primary forest si
 The failure is subtle and worth reviewing for a moment. The gMSA password protection worked exactly as designed. The group membership controlled access exactly as designed. The misconfiguration was entirely in the ACL that governed who could modify that group from across the trust boundary. Reviewed in isolation within the trusted forest, every control looks correct. The break only appears when the cross-forest ACL surface is modeled holistically. Enterprise AD security reviews are almost never scoped that way.
  
 > **Note Worthy:** Any read of `msDS-ManagedPassword` by a principal outside the designated reader group should be an immediate alert. Changes to the membership of groups that control gMSA access should be monitored as write-to-sensitive-group events. Cross-forest group membership changes specifically represent trust boundary modifications that most defenders have never baselined.
-> {: .prompt-tip }
+{: .prompt-tip }
  
 ---
  
@@ -94,7 +94,7 @@ I want to be precise about why this matters defensively. JEA worked. The executi
 Mandiant documented an analogous failure when analyzing APT29's (Cozy Bear) operations against a European diplomatic entity, where the attack stood out for the abuse of Windows Credential Roaming, a feature used to persist certificates and credential material with the user across a domain. [[6]](https://cloud.google.com/blog/topics/threat-intelligence/apt29-windows-credential-roaming/) The specific mechanism differs from what I found here, but the category is identical: credential artifacts persisted in a location that the interface restriction didn't cover, and those artifacts were accessible to any principal who could reach the path.
  
 > **Note Worthy:** File access telemetry is the detection opportunity here. A service account reading a user's PSReadLine history file has no legitimate operational purpose. Sysmon Event ID 11 [[9]](https://learn.microsoft.com/en-us/sysinternals/downloads/sysmon) captures file creation, and file access events from unexpected security contexts against known history file paths are detectable if the Sysmon configuration targets them. Most don't.
-> {: .prompt-tip }
+{: .prompt-tip }
  
 ---
  
@@ -136,7 +136,7 @@ The underlying privilege is the same across all of them. `SeImpersonatePrivilege
 I ran the escalation and had a SYSTEM shell on the trusted forest's domain controller within minutes of having database access. The escalation was a consequence of the privilege design, not a separate vulnerability.
  
 > **Note Worthy:** Process creation telemetry is the detection opportunity here. Sysmon Event ID 1 [[9]](https://learn.microsoft.com/en-us/sysinternals/downloads/sysmon), filtered for child processes spawned by database service accounts with elevated integrity levels, is the signal. A privileged subprocess with a database service parent has no legitimate explanation.
-> {: .prompt-tip }
+{: .prompt-tip }
  
 ---
  
@@ -153,7 +153,7 @@ This is the moment where the path snapped into focus. The entire lateral movemen
 APT29 (Cozy Bear) maintains a documented toolset that includes BloodHound, Mimikatz, Rubeus, and SharpView, tools that collectively enable credential extraction and domain replication abuse at scale. [[12]](https://cyble.com/threat-actor-profiles/apt-29/) DCSync is a standard component of that arsenal, not because it's novel but because it works consistently in environments where the detection doesn't exist.
  
 > **Note Worthy:** Windows generates Event ID 4662 [[13]](https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/plan/security-best-practices/audit-policy-recommendations) for directory replication requests. A DrsGetNCChanges request from a non-DC source is definitionally anomalous. The detection rule is trivial to write. In most environments, nobody has written it.
-> {: .prompt-tip }
+{: .prompt-tip }
  
 ---
  
