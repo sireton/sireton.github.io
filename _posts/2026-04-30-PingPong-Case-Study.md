@@ -43,7 +43,7 @@ I requested the certificate, used it to authenticate, and had a working WinRM se
 This isn't a theoretical risk. In April 2022, Mandiant reported that APT29 (Cozy Bear) exploited misconfigured certificate templates to impersonate admin users, requesting certificates as low-privileged users and specifying high-privileged accounts in the Subject Alternative Name (SAN) field, allowing them to authenticate as those accounts. [[4]](https://www.semperis.com/blog/esc1-attack-explained/) In April 2024, Google Cloud reported that UNC5330 used an LDAP bind account to exploit a vulnerable Windows certificate template, creating a computer object and impersonating a domain administrator. [[5]](https://cloud.google.com/blog/topics/threat-intelligence/ivanti-post-exploitation-lateral-movement) The technique is in active use by nation-state actors. PingPong models it accurately.
  
 > **Note Worthy:** CA request logs are where a defender would have seen this. A certificate request from a non-standard principal type, or one with a SAN value inconsistent with the requestor's identity, is anomalous. The event data exists. In most organizations it sits in compliance storage and nothing alerts on it.
-> {: .prompt-tip }
+{: .prompt-tip }
  
 ---
  
