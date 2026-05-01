@@ -23,7 +23,7 @@ PingPong is a Season 10 Windows machine rated Insane, built around a bidirection
  
 ## The Engagement 
  
-PingPong doesn't hand you a path. From the first moment I had connectivity, it was clear this was going to require building a mental model of the environment before anything useful could happen. Two forest environments. A bidirectional trust relationship. Separate domain controllers, separate PKI infrastructure, and a service account design that crossed the forest boundary in ways that turned out to matter enormously.
+PingPong doesn't hand you a path. From the first moment I had connectivity, it was clear this was going to require building a mental model of the environment before anything useful could happen. The architecture wasn't obvious. Everything that followed depended on getting that model right.
  
 I treated this the same way I'd treat a real engagement: enumerate deliberately, form hypotheses, test assumptions in order of confidence. My goal wasn't to find the first thing that looked broken. It was to understand what the environment was supposed to do, so that when something deviated from that model, I'd recognize why it mattered rather than just stumbling into it.
 
