@@ -15,7 +15,7 @@ description: "This case study traces how PKI trust, cross-forest ACL inheritance
 
 ---
   
-PingPong is a Season 10 Windows machine rated Insane, built around a bidirectional Active Directory forest trust and a PKI infrastructure that fails at both ends of the engagement chain. Starting from an assumed-breach credential set, the path chains ADCS template abuse, cross-forest ACL exploitation, gMSA credential theft, JEA artifact disclosure, Kerberos delegation abuse, token impersonation, DCSync, and a second ADCS stage to reach domain administrator across both forests. A full engagement report will be published after the machine retires.
+PingPong is a Season 10 Windows machine rated Insane, built around a bidirectional Active Directory forest trust and a PKI infrastructure that fails at both ends of the engagement chain. A full engagement report will be published after the machine retires.
 
 *This is a spoiler-safe engagement analysis of Hack The Box's PingPong (Season 10, Insane, Windows, Active). Flags, credentials, exact commands, endpoint paths, payloads, usernames, and machine-specific identifiers are intentionally omitted. The techniques, control failures, and threat parallels discussed are real. The progressive analysis and research is the lesson.*
  
